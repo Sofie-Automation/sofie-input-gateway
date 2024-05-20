@@ -3,9 +3,9 @@ import { Logger } from '../../logger'
 import { Device } from '../../devices/device'
 import { FeedbackStore } from '../../devices/feedbackStore'
 import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib'
-import { SomeFeedback } from '../../feedback/feedback'
+import { BitmapFeedback, Feedback, SomeFeedback } from '../../feedback/feedback'
 import { getBitmap } from '../../feedback/bitmap'
-import { StreamDeckDeviceOptions } from '../../generated'
+import { StreamDeckDeviceOptions, StreamdeckStylePreset } from '../../generated'
 
 import DEVICE_OPTIONS from './$schemas/options.json'
 
@@ -224,18 +224,44 @@ export class StreamDeckDevice extends Device {
 
 			if (key !== undefined && this.BTN_SIZE) {
 				this.streamDeck?.checkValidKeyIndex(key)
-				const imgBuffer = await getBitmap(feedback, this.BTN_SIZE, this.BTN_SIZE, isDown)
+				const imgBuffer = await getBitmap(
+					this.convertFeedbackToBitmapFeedback(feedback),
+					this.BTN_SIZE,
+					this.BTN_SIZE,
+					isDown
+				)
 				await this.streamDeck?.fillKeyBuffer(key, imgBuffer, {
 					format: 'rgba',
 				})
 			} else if (encoder !== undefined && this.ENC_SIZE_HEIGHT && this.ENC_SIZE_WIDTH) {
-				const imgBuffer = await getBitmap(feedback, this.ENC_SIZE_WIDTH, this.ENC_SIZE_HEIGHT, isDown)
+				const imgBuffer = await getBitmap(
+					this.convertFeedbackToBitmapFeedback(feedback),
+					this.ENC_SIZE_WIDTH,
+					this.ENC_SIZE_HEIGHT,
+					isDown
+				)
 				await streamdeck.fillEncoderLcd(encoder, imgBuffer, {
 					format: 'rgba',
 				})
 			}
 		} catch (e) {
 			this.logger.debug(`Stream Deck: Exception thrown in updateFeedback()`, e)
+		}
+	}
+
+	private convertFeedbackToBitmapFeedback(feedback: Feedback): BitmapFeedback | Feedback {
+		const stylePresetId = feedback.stylePreset
+		if (!stylePresetId || !this.config.stylePresets) return feedback
+
+		const stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+			(preset) => preset.id === stylePresetId
+		)
+		if (!stylePreset) return feedback
+
+		return {
+			...feedback,
+			backgroundImage: stylePreset.backgroundImage,
+			hideText: !stylePreset.drawText,
 		}
 	}
 

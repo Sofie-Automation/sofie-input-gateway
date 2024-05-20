@@ -1755,7 +1755,6 @@ __metadata:
     skia-canvas: "npm:^1.0.1"
     xkeys: "npm:^3.1.1"
   peerDependencies:
-    "@sofie-automation/server-core-integration": "*"
     "@sofie-automation/shared-lib": "*"
   languageName: unknown
   linkType: soft
