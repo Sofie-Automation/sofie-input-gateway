@@ -30,6 +30,8 @@
 			"type": "object",
 			"ui:title": "Style Presets",
 			"ui:description": "Styling definitions to use when drawing the buttons",
+			"ui:import-export": true,
+
 			"patternProperties": {
 				"": {
 					"type": "object",
