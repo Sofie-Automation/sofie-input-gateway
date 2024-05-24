@@ -643,7 +643,6 @@ export class InputManagerHandler {
 				contentTypes = previewedAdlibs
 					.map((adlib) => adlib.sourceLayerType)
 					.filter((a) => a !== undefined) as SourceLayerType[]
-				// @ts-expect-error lazy
 				styleClassNames = previewedAdlibs[0].styleClassNames
 			}
 		}
