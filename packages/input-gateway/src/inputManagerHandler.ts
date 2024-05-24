@@ -625,7 +625,7 @@ export class InputManagerHandler {
 		let contentLayerLongName: string | undefined
 		let contentLayerShortName: string | undefined
 		let tally: Tally = Tally.NONE
-		let stylePreset: string | undefined
+		let styleClassNames: string | undefined
 
 		if (actionId) {
 			const previewedAdlibs = this.#coreHandler.core
@@ -643,7 +643,8 @@ export class InputManagerHandler {
 				contentTypes = previewedAdlibs
 					.map((adlib) => adlib.sourceLayerType)
 					.filter((a) => a !== undefined) as SourceLayerType[]
-				stylePreset = previewedAdlibs[0].stylePreset
+				// @ts-expect-error lazy
+				styleClassNames = previewedAdlibs[0].styleClassNames
 			}
 		}
 
@@ -660,7 +661,7 @@ export class InputManagerHandler {
 			content: contentLabel ? { long: contentLabel } : undefined,
 			classNames: InputManagerHandler.buildFeedbackClassNames(mountedTrigger, contentTypes),
 			tally,
-			stylePreset,
+			styleClassNames,
 		})
 	}
 }

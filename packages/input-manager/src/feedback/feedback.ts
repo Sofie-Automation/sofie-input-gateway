@@ -58,16 +58,12 @@ export interface Feedback {
 	content?: Label
 	/** The label for the type of content attached to this Action */
 	contentClass?: Label
-	// /** The duration of the content attached to this Action */
-	// duration?: string
 	/** The tally state bitmap */
 	tally?: Tally
 	/** Various classes attached to this Action - including the ones defined in `ClassNames` */
 	classNames?: string[]
-	// /** A PNG image of the content attached to this Action */
-	// thumbnail?: Blob
-	/** The id of the style preset to use when drawing the button */
-	stylePreset?: string
+	/** Space separated list of class names to use when drawing the button */
+	styleClassNames?: string
 }
 
 export type SomeFeedback = Feedback | null

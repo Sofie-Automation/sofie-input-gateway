@@ -250,19 +250,27 @@ export class StreamDeckDevice extends Device {
 	}
 
 	private convertFeedbackToBitmapFeedback(feedback: Feedback): BitmapFeedback | Feedback {
-		const stylePresetId = feedback.stylePreset
-		if (!stylePresetId || !this.config.stylePresets) return feedback
+		const styleClassNames = feedback.styleClassNames
+		if (!styleClassNames || !this.config.stylePresets) return feedback
 
-		const stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
-			(preset) => preset.id === stylePresetId
-		)
-		if (!stylePreset) return feedback
+		console.log('test', styleClassNames)
 
-		return {
-			...feedback,
-			backgroundImage: stylePreset.backgroundImage,
-			hideText: !stylePreset.drawText,
+		// Find the first match
+		for (const name of styleClassNames.split(' ')) {
+			const stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+				(preset) => preset.id === name
+			)
+
+			if (stylePreset) {
+				return {
+					...feedback,
+					backgroundImage: stylePreset.backgroundImage,
+					hideText: !stylePreset.drawText,
+				}
+			}
 		}
+
+		return feedback
 	}
 
 	private quietUpdateFeedbackWithDownState = (trigger: string): void => {
