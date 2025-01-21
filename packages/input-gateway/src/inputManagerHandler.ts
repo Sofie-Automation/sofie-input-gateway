@@ -33,9 +33,7 @@ import {
 	PeripheralDevicePubSubCollectionsNames,
 } from '@sofie-automation/server-core-integration'
 import { literal, sleep } from '@sofie-automation/shared-lib/dist/lib/lib'
-// Eslint doesn't seee p-queue, because it's hoisted, but TypeScript does
-// eslint-disable-next-line node/no-missing-import
-import PQueue from 'p-queue'
+import PQueue from '@esm2cjs/p-queue'
 import { InputGatewaySettings } from './generated/options'
 
 export type SetProcessState = (processName: string, comments: string[], status: StatusCode) => void
