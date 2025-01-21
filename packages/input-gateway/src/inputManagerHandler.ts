@@ -33,6 +33,8 @@ import {
 	PeripheralDevicePubSubCollectionsNames,
 } from '@sofie-automation/server-core-integration'
 import { literal, sleep } from '@sofie-automation/shared-lib/dist/lib/lib'
+// Eslint doesn't seee p-queue, because it's hoisted, but TypeScript does
+// eslint-disable-next-line node/no-missing-import
 import PQueue from 'p-queue'
 import { InputGatewaySettings } from './generated/options'
 
@@ -139,8 +141,6 @@ export class InputManagerHandler {
 
 	async initInputManager(settings: DeviceSettings): Promise<void> {
 		this.#logger.info('Initializing Input Manager with the following settings:')
-
-		this.#logger.info(JSON.stringify(settings))
 
 		this.#deviceSettings = settings
 
@@ -650,9 +650,7 @@ export class InputManagerHandler {
 				contentLayerLongName = previewedAdlibs[0].sourceLayerName?.name
 				contentLayerShortName = previewedAdlibs[0].sourceLayerName?.abbreviation
 				contentLabel = previewedAdlibs.map((adlib) => InputManagerHandler.getStringLabel(adlib.label)).join(', ')
-				contentTypes = previewedAdlibs
-					.map((adlib) => adlib.sourceLayerType)
-					.filter((a) => a !== undefined) as SourceLayerType[]
+				contentTypes = previewedAdlibs.map((adlib) => adlib.sourceLayerType).filter((a) => a !== undefined)
 				styleClassNames = previewedAdlibs[0].styleClassNames
 			}
 		}

@@ -97,7 +97,7 @@ class InputManager extends EventEmitter<DeviceEvents> {
 	}
 
 	private refreshDevicesInterval = (): void => {
-		this.#logger.silly(`Refreshing devices... ${this.#refreshRunning}`)
+		this.#logger.silly(`Refreshing devices... Is already running: ${this.#refreshRunning}`)
 		if (this.#refreshRunning === true) return
 
 		this.#refreshRunning = true

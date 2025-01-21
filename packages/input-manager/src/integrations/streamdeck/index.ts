@@ -1,8 +1,14 @@
-import { listStreamDecks, openStreamDeck, StreamDeck } from '@elgato-stream-deck/node'
+import {
+	listStreamDecks,
+	openStreamDeck,
+	StreamDeck,
+	StreamDeckButtonControlDefinitionLcdFeedback,
+	StreamDeckControlDefinition,
+} from '@elgato-stream-deck/node'
 import { Logger } from '../../logger'
 import { Device } from '../../devices/device'
 import { FeedbackStore } from '../../devices/feedbackStore'
-import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib'
+import { assertNever, DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib'
 import { BitmapFeedback, Feedback, SomeFeedback } from '../../feedback/feedback'
 import { getBitmap } from '../../feedback/bitmap'
 import { StreamDeckDeviceOptions, StreamdeckStylePreset } from '../../generated'
@@ -14,9 +20,6 @@ export class StreamDeckDevice extends Device {
 	private config: StreamDeckDeviceOptions
 	private feedbacks = new FeedbackStore()
 	private isButtonDown: Record<string, boolean> = {}
-	private BTN_SIZE: number | undefined = undefined
-	private ENC_SIZE_WIDTH: number | undefined = undefined
-	private ENC_SIZE_HEIGHT: number | undefined = undefined
 
 	constructor(config: StreamDeckDeviceOptions, logger: Logger) {
 		super(logger)
@@ -46,17 +49,14 @@ export class StreamDeckDevice extends Device {
 		})
 		if (!device) throw new Error(`Could not open device: "${deviceInfo.path}"`)
 		this.streamDeck = device
-		this.BTN_SIZE = this.streamDeck.ICON_SIZE
-		this.ENC_SIZE_HEIGHT = this.streamDeck.LCD_ENCODER_SIZE?.height
-		this.ENC_SIZE_WIDTH = this.streamDeck.LCD_ENCODER_SIZE?.width
 
 		const brightness = this.config.brightness ?? DEFAULT_BRIGHTNESS
 
 		this.streamDeck.setBrightness(brightness).catch((err) => {
 			this.logger.error(`Error setting brightness: ${err}`, err)
 		})
-		this.streamDeck.addListener('down', (key) => {
-			const id = `${key}`
+		this.streamDeck.addListener('down', (control) => {
+			const id = StreamDeckDevice.getTriggerId(control)
 			const triggerId = `${id} ${Symbols.DOWN}`
 
 			this.addTriggerEvent({ triggerId })
@@ -65,8 +65,8 @@ export class StreamDeckDevice extends Device {
 
 			this.quietUpdateFeedbackWithDownState(id)
 		})
-		this.streamDeck.addListener('up', (key) => {
-			const id = `${key}`
+		this.streamDeck.addListener('up', (control) => {
+			const id = StreamDeckDevice.getTriggerId(control)
 			const triggerId = `${id} ${Symbols.UP}`
 
 			this.addTriggerEvent({ triggerId })
@@ -75,56 +75,22 @@ export class StreamDeckDevice extends Device {
 
 			this.quietUpdateFeedbackWithDownState(id)
 		})
-		this.streamDeck.addListener('encoderDown', (encoder) => {
-			const id = `Enc${encoder}`
-			const triggerId = `${id} ${Symbols.DOWN}`
-
-			this.addTriggerEvent({ triggerId })
-
-			this.isButtonDown[id] = true
-
-			this.quietUpdateFeedbackWithDownState(id)
-		})
-		this.streamDeck.addListener('encoderUp', (encoder) => {
-			const id = `Enc${encoder}`
-			const triggerId = `${id} ${Symbols.UP}`
-
-			this.addTriggerEvent({ triggerId })
-
-			this.isButtonDown[id] = false
-
-			this.quietUpdateFeedbackWithDownState(id)
-		})
-		this.streamDeck.addListener('rotateLeft', (encoder, deltaValue) => {
-			const id = `Enc${encoder}`
-			const triggerId = `${id} ${Symbols.JOG}`
-
-			this.updateTriggerAnalog({ triggerId, rateLimit: DEFAULT_ANALOG_RATE_LIMIT }, (prev?: { deltaValue: number }) => {
-				if (!prev) prev = { deltaValue: 0 }
-				return {
-					deltaValue: prev.deltaValue - deltaValue,
-					direction: -1,
-				}
-			})
-
-			this.quietUpdateFeedbackWithDownState(id)
-		})
-		this.streamDeck.addListener('rotateRight', (encoder, deltaValue) => {
-			const id = `Enc${encoder}`
+		this.streamDeck.addListener('rotate', (control, deltaValue) => {
+			const id = StreamDeckDevice.getTriggerId(control)
 			const triggerId = `${id} ${Symbols.JOG}`
 
 			this.updateTriggerAnalog({ triggerId, rateLimit: DEFAULT_ANALOG_RATE_LIMIT }, (prev?: { deltaValue: number }) => {
 				if (!prev) prev = { deltaValue: 0 }
 				return {
 					deltaValue: prev.deltaValue + deltaValue,
-					direction: 1,
+					direction: -1,
 				}
 			})
 
 			this.quietUpdateFeedbackWithDownState(id)
 		})
-		this.streamDeck.addListener('lcdShortPress', (encoder, position) => {
-			const id = `Enc${encoder}`
+		this.streamDeck.addListener('lcdShortPress', (control, position) => {
+			const id = StreamDeckDevice.getTriggerId(control)
 			const triggerId = `${id} Tap`
 
 			this.addTriggerEvent({
@@ -137,8 +103,8 @@ export class StreamDeckDevice extends Device {
 
 			this.quietUpdateFeedbackWithDownState(id)
 		})
-		this.streamDeck.addListener('lcdLongPress', (encoder, position) => {
-			const id = `Enc${encoder}`
+		this.streamDeck.addListener('lcdLongPress', (control, position) => {
+			const id = StreamDeckDevice.getTriggerId(control)
 			const triggerId = `${id} Press`
 
 			this.addTriggerEvent({
@@ -151,15 +117,13 @@ export class StreamDeckDevice extends Device {
 
 			this.quietUpdateFeedbackWithDownState(id)
 		})
-		this.streamDeck.addListener('lcdSwipe', (fromEncoder, toEncoder, from, to) => {
-			const id = `Enc${fromEncoder}`
+		this.streamDeck.addListener('lcdSwipe', (control, from, to) => {
+			const id = StreamDeckDevice.getTriggerId(control)
 			const triggerId = `${id} Swipe`
 
 			this.addTriggerEvent({
 				triggerId,
 				arguments: {
-					fromEncoder,
-					toEncoder,
 					fromXPosition: from.x,
 					fromYPosition: from.y,
 					toXPosition: to.x,
@@ -182,10 +146,61 @@ export class StreamDeckDevice extends Device {
 		await this.streamDeck.close()
 	}
 
+	private isValidButtonIndex(index: number): boolean {
+		return !!this.streamDeck?.CONTROLS.find((control) => control.type === 'button' && control.index === index)
+	}
+
+	private getLCDSizeForButtonIndex(index: number): { width: number; height: number } {
+		const control = this.streamDeck?.CONTROLS.find<StreamDeckButtonControlDefinitionLcdFeedback>(
+			(control): control is StreamDeckButtonControlDefinitionLcdFeedback =>
+				control.type === 'button' && control.feedbackType === 'lcd' && control.index === index
+		)
+		if (!control) {
+			throw new Error(`Unknown button index: ${index} or button does not have LCD feedback type`)
+		}
+		return { width: control.pixelSize.width, height: control.pixelSize.height }
+	}
+
+	private getLCDSizeForLCDSegmentId(id: number): { width: number; height: number } {
+		const control = this.streamDeck?.CONTROLS.find<StreamDeckButtonControlDefinitionLcdFeedback>(
+			(control): control is StreamDeckButtonControlDefinitionLcdFeedback =>
+				control.type === 'lcd-segment' && control.id === id
+		)
+		if (!control) {
+			throw new Error(`Unknown LCD Segment id: ${id} or button does not have LCD feedback type`)
+		}
+		return { width: control.pixelSize.width, height: control.pixelSize.height }
+	}
+
+	private static getPrefixForControl(control: StreamDeckControlDefinition): string {
+		switch (control.type) {
+			case 'button':
+				return ''
+			case 'encoder':
+				return 'Enc'
+			case 'lcd-segment':
+				return 'LCD'
+			default:
+				assertNever(control)
+				return 'Unknown'
+		}
+	}
+
+	private static getTriggerId(control: StreamDeckControlDefinition): string {
+		const prefix = StreamDeckDevice.getPrefixForControl(control)
+		switch (control.type) {
+			case 'lcd-segment':
+				return `${prefix}${control.id}`
+			default:
+				return `${prefix}${control.index}`
+		}
+	}
+
 	private static parseTriggerId(triggerId: string): {
 		id: string
 		key: number | undefined
 		encoder: number | undefined
+		lcdSegment: number | undefined
 		action: string
 	} {
 		const triggerElements = triggerId.split(/\s+/)
@@ -193,54 +208,62 @@ export class StreamDeckDevice extends Device {
 		const action = triggerElements[1] ?? ''
 		let key: number | undefined = undefined
 		let encoder: number | undefined = undefined
+		let lcdSegment: number | undefined = undefined
 		let result = null
 		if ((result = id.match(/^Enc(\d+)$/))) {
 			encoder = Number(result[1]) ?? 0
-			return { id, key, encoder, action }
+			lcdSegment = encoder
+			return { id, key, encoder, lcdSegment, action }
+		} else if ((result = id.match(/^LCD(\d+)$/))) {
+			lcdSegment = encoder
+			return { id, key, encoder, lcdSegment, action }
 		}
 		key = Number(id) ?? 0
-		return { id, key, encoder, action }
+		return { id, key, encoder, lcdSegment, action }
 	}
 
 	private updateFeedback = async (trigger: string, isDown: boolean): Promise<void> => {
 		const streamdeck = this.streamDeck
 		if (!streamdeck) return
 
-		const { id, key, encoder } = StreamDeckDevice.parseTriggerId(trigger)
+		const { id, key, lcdSegment } = StreamDeckDevice.parseTriggerId(trigger)
 
 		const feedback = this.feedbacks.get(id, ACTION_PRIORITIES)
 
 		try {
 			if (!feedback) {
 				if (key !== undefined) await streamdeck.clearKey(key)
-				if (encoder !== undefined && this.ENC_SIZE_HEIGHT && this.ENC_SIZE_WIDTH) {
-					const imgBuffer = await getBitmap(null, this.ENC_SIZE_WIDTH, this.ENC_SIZE_HEIGHT, false)
-					await streamdeck.fillEncoderLcd(encoder, imgBuffer, {
+
+				if (lcdSegment !== undefined) {
+					const dimensions = this.getLCDSizeForLCDSegmentId(lcdSegment)
+					const imgBuffer = await getBitmap(null, dimensions.width, dimensions.height, false)
+					await streamdeck.fillLcd(lcdSegment, imgBuffer, {
 						format: 'rgba',
 					})
 				}
 				return
 			}
 
-			if (key !== undefined && this.BTN_SIZE) {
-				this.streamDeck?.checkValidKeyIndex(key)
+			if (key !== undefined && this.isValidButtonIndex(key)) {
+				const dimensions = this.getLCDSizeForButtonIndex(key)
 				const imgBuffer = await getBitmap(
 					this.convertFeedbackToBitmapFeedback(feedback),
-					this.BTN_SIZE,
-					this.BTN_SIZE,
+					dimensions.width,
+					dimensions.height,
 					isDown
 				)
 				await this.streamDeck?.fillKeyBuffer(key, imgBuffer, {
 					format: 'rgba',
 				})
-			} else if (encoder !== undefined && this.ENC_SIZE_HEIGHT && this.ENC_SIZE_WIDTH) {
+			} else if (lcdSegment !== undefined) {
+				const dimensions = this.getLCDSizeForLCDSegmentId(lcdSegment)
 				const imgBuffer = await getBitmap(
 					this.convertFeedbackToBitmapFeedback(feedback),
-					this.ENC_SIZE_WIDTH,
-					this.ENC_SIZE_HEIGHT,
+					dimensions.width,
+					dimensions.height,
 					isDown
 				)
-				await streamdeck.fillEncoderLcd(encoder, imgBuffer, {
+				await streamdeck.fillLcd(lcdSegment, imgBuffer, {
 					format: 'rgba',
 				})
 			}

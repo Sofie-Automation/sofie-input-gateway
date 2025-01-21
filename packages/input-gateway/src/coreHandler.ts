@@ -199,7 +199,7 @@ export class CoreHandler {
 				this.logger.info('Loglevel: ' + this.logger.level)
 			}
 
-			this.logger.info('Changed PeripheralDevice: ' + JSON.stringify(device))
+			this.logger.info('Changed PeripheralDevice')
 			if (this._onChanged) this._onChanged()
 		}
 	}
