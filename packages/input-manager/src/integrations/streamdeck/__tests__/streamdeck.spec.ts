@@ -1,3 +1,7 @@
+import type { StreamDeckButtonControlDefinition, StreamDeckEncoderControlDefinition } from '@elgato-stream-deck/node'
+import { Symbols } from '../../../lib'
+import { sleep } from '@sofie-automation/shared-lib/dist/lib/lib'
+
 const mockBitmapFeedbackFactory = {
 	init: jest.fn(),
 	getBitmap: jest.fn((feedback: any, _width: number, _height: number, isDown: boolean) => {
@@ -17,20 +21,41 @@ const mockStreamDeckList = [
 	},
 ]
 
-let mockListeners: Record<string, (key: number) => void> = {}
+let mockListeners: Record<
+	string,
+	(control: StreamDeckButtonControlDefinition | StreamDeckEncoderControlDefinition) => void
+> = {}
 
 const mockStreamDeck = {
-	ICON_SIZE: 96,
-	addListener: jest.fn((event: string, listener: (key: number) => void) => {
-		mockListeners[event] = listener
-	}),
+	addListener: jest.fn(
+		(
+			event: string,
+			listener: (control: StreamDeckButtonControlDefinition | StreamDeckEncoderControlDefinition) => void
+		) => {
+			mockListeners[event] = listener
+		}
+	),
 	clearKey: jest.fn(),
 	fillKeyBuffer: jest.fn(),
-	fillEncoderLcd: jest.fn(),
+	fillLcd: jest.fn(),
 	clearPanel: jest.fn(),
 	close: jest.fn(),
 	checkValidKeyIndex: jest.fn(),
 	setBrightness: jest.fn(async () => Promise.resolve()),
+	CONTROLS: [
+		{
+			type: 'button' as const,
+			feedbackType: 'lcd' as const,
+			pixelSize: {
+				height: 96,
+				width: 96,
+			},
+			index: 1,
+			hidIndex: 0,
+			row: 0,
+			column: 0,
+		},
+	],
 }
 
 jest.mock('@elgato-stream-deck/node', () => ({
@@ -48,10 +73,12 @@ jest.mock('@elgato-stream-deck/node', () => ({
 	},
 }))
 
+function mockTriggerControl(event: 'up' | 'down') {
+	mockListeners[event](mockStreamDeck.CONTROLS[0])
+}
+
 import { StreamDeckDevice } from '../index'
 import { MockLogger } from '../../../__mocks__/logger'
-import { Symbols } from '../../../lib'
-import { sleep } from '@sofie-automation/shared-lib/dist/lib/lib'
 
 describe('Stream Deck', () => {
 	async function connectToMockStreamDeck() {
@@ -80,7 +107,7 @@ describe('Stream Deck', () => {
 		const triggerHandler = jest.fn()
 		device.on('trigger', triggerHandler)
 
-		mockListeners['down'](1)
+		mockTriggerControl('down')
 
 		expect(triggerHandler).toHaveBeenCalledTimes(1)
 		expect(device.getNextTrigger()).toMatchObject({
@@ -89,7 +116,7 @@ describe('Stream Deck', () => {
 		expect(device.getNextTrigger()).toBeUndefined() // No more triggers to send
 		triggerHandler.mockClear()
 
-		mockListeners['up'](1)
+		mockTriggerControl('up')
 
 		expect(triggerHandler).toHaveBeenCalledTimes(1)
 		expect(device.getNextTrigger()).toMatchObject({
@@ -135,7 +162,7 @@ describe('Stream Deck', () => {
 		expect(mockStreamDeck.fillKeyBuffer.mock.calls[1][1]).toMatch(/Mock Action/)
 		expect(mockStreamDeck.fillKeyBuffer.mock.calls[1][1]).toMatch(/isDown: false/)
 
-		mockListeners['down'](1)
+		mockTriggerControl('down')
 		await sleep(2) // the streamdeck needs some time to update
 
 		expect(mockStreamDeck.fillKeyBuffer).toHaveBeenCalledTimes(3)
@@ -143,7 +170,7 @@ describe('Stream Deck', () => {
 		expect(mockStreamDeck.fillKeyBuffer.mock.calls[2][1]).toMatch(/Mock Action/)
 		expect(mockStreamDeck.fillKeyBuffer.mock.calls[2][1]).toMatch(/isDown: true/)
 
-		mockListeners['up'](1)
+		mockTriggerControl('up')
 		await sleep(2)
 
 		expect(mockStreamDeck.fillKeyBuffer).toHaveBeenCalledTimes(4)
