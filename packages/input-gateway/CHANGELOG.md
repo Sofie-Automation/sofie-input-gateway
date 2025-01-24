@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1-alpha.0](https://github.com/nrkno/sofie-input-gateway/compare/v0.3.0...v0.3.1-alpha.0) (2025-01-24)
+
+
+### Bug Fixes
+
+* resolve build issue related to p-queue ([8e850f8](https://github.com/nrkno/sofie-input-gateway/commit/8e850f84bf883862f41c78f3992b459c3ec93adb))
+* **Stream Deck:** update elgato-stream-deck library to resolve an issue with slow discovery of HID devices ([fbcb790](https://github.com/nrkno/sofie-input-gateway/commit/fbcb790c42be28b277aa8298f6432bb6271a5d6b))
+
+
+
+
+
 # [0.3.0](https://github.com/nrkno/sofie-input-gateway/compare/v0.3.0-alpha.2...v0.3.0) (2024-10-01)
 
 **Note:** Version bump only for package input-gateway
