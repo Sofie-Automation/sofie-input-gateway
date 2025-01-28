@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1-alpha.1](https://github.com/nrkno/sofie-input-gateway/compare/v0.3.1-alpha.0...v0.3.1-alpha.1) (2025-01-28)
+
+
+### Features
+
+* add more debug logging for tracing rendering issues with skia-canvas ([ab06124](https://github.com/nrkno/sofie-input-gateway/commit/ab061245bf5e92578b400e5d91d1af28bc8443e3))
+
+
+
+
+
 ## [0.3.1-alpha.0](https://github.com/nrkno/sofie-input-gateway/compare/v0.3.0...v0.3.1-alpha.0) (2025-01-24)
 
 
