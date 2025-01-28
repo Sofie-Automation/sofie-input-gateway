@@ -138,8 +138,6 @@ export class InputManagerHandler {
 	}
 
 	async initInputManager(settings: DeviceSettings): Promise<void> {
-		this.#logger.info('Initializing Input Manager with the following settings:')
-
 		this.#deviceSettings = settings
 
 		this.#inputManager = await this.#createInputManager(settings)

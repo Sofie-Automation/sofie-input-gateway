@@ -1806,7 +1806,7 @@ __metadata:
     fold-to-ascii: "npm:^5.0.1"
     lru-cache: "npm:11.0.2"
     osc: "npm:^2.4.4"
-    skia-canvas: "npm:2.0.1"
+    skia-canvas: "npm:2.0.2"
     xkeys: "npm:^3.1.1"
   peerDependencies:
     "@sofie-automation/shared-lib": "*"
@@ -10109,9 +10109,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"skia-canvas@npm:2.0.1":
-  version: 2.0.1
-  resolution: "skia-canvas@npm:2.0.1"
+"skia-canvas@npm:2.0.2":
+  version: 2.0.2
+  resolution: "skia-canvas@npm:2.0.2"
   dependencies:
     "@mapbox/node-pre-gyp": "npm:^1.0.11"
     cargo-cp-artifact: "npm:^0.1"
@@ -10119,7 +10119,7 @@ __metadata:
     path-browserify: "npm:^1.0.1"
     simple-get: "npm:^4.0.1"
     string-split-by: "npm:^1.0.0"
-  checksum: 10/d1bc96fa1c9870af7be8ab3ce2896102602b071919e7e6fb165714fd00c27535e413fb16241f0b0727b8c88877df5b9373a856bf0f4bebf218ecbec797904830
+  checksum: 10/1811540520da10b008a5a14690c3eadd89ac691691808a87c0ed05d3dda3d191acd7cad505a0bad67e228cab7b832d0e452994992fb5cdaf96542c1c3c1bde40
   languageName: node
   linkType: hard
 

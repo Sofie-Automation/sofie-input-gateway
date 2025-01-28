@@ -72,13 +72,17 @@ class InputManager extends EventEmitter<DeviceEvents> {
 	async init(): Promise<void> {
 		this.#devices = {}
 
-		await initBitmapFeedback()
+		await initBitmapFeedback(this.#logger.child({ module: 'bitmapFeedback' }))
+
+		this.#logger.silly(`Feedback services intialization done`)
 
 		await Promise.allSettled(
 			Object.entries<SomeDeviceConfig>(this.config.devices).map(async ([deviceId, deviceConfig]) =>
 				this.createDevice(deviceId, deviceConfig ?? {})
 			)
 		)
+
+		this.#logger.silly(`Device creation done`)
 
 		this.#refreshInterval = setInterval(this.refreshDevicesInterval, REFRESH_INTERVAL)
 	}

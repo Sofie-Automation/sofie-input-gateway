@@ -1,4 +1,4 @@
-import { CanvasRenderingContext2D } from 'skia-canvas'
+import { CanvasRenderingContext2D, CanvasTextAlign } from 'skia-canvas'
 import { createFill } from './fill'
 
 enum TRBLPositions {

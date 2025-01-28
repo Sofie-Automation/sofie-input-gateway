@@ -1,4 +1,4 @@
-import { CanvasRenderingContext2D } from 'skia-canvas'
+import { CanvasRenderingContext2D, CanvasTextAlign } from 'skia-canvas'
 import { BitmapStyleProps, Feedback } from '../../feedback'
 import { TextContext } from '../lib/TextContext'
 import { GlobalImageCache } from '../lib/ImageCache'
