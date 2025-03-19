@@ -139,7 +139,7 @@ export class MIDIDevice extends Device {
 		if ((feedback?.tally ?? 0 & Tally.NEXT) !== 0) {
 			velocity = MIDIDevice.definedAndGTE0(config.velocityNext) ?? velocity
 		}
-		if ((feedback?.tally ?? 0 & Tally.CURRENT) !== 0) {
+		if ((feedback?.tally ?? 0 & Tally.ON_AIR) !== 0) {
 			velocity = MIDIDevice.definedAndGTE0(config.velocityOnAir) ?? velocity
 		}
 
@@ -166,7 +166,7 @@ export class MIDIDevice extends Device {
 		if ((feedback?.tally ?? 0 & Tally.NEXT) !== 0) {
 			value = MIDIDevice.definedAndGTE0(config.valueNext) ?? value
 		}
-		if ((feedback?.tally ?? 0 & Tally.CURRENT) !== 0) {
+		if ((feedback?.tally ?? 0 & Tally.ON_AIR) !== 0) {
 			value = MIDIDevice.definedAndGTE0(config.valueOnAir) ?? value
 		}
 

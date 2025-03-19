@@ -7,7 +7,7 @@ export interface Label {
 
 export enum Tally {
 	/** Represented object currently On Air (on Program row, visible, etc.) */
-	CURRENT = 0b10000,
+	ON_AIR = 0b10000,
 	/** Represented object currently in Next (on Preview row, cued up, etc.) */
 	NEXT = 0b1000,
 	/** An alternative, custom state (ISO recording, etc.) */

@@ -177,8 +177,8 @@ export class XKeysDevice extends Device {
 
 	private static selectKeyBacklight(tally: Tally | undefined, classNames: string[] | undefined): string | null {
 		if (classNames === undefined) return null
-		if (tally !== undefined && (tally & Tally.CURRENT) === Tally.CURRENT) return Colors.RED
-		if (tally !== undefined && (tally & Tally.NEXT) === Tally.CURRENT) return Colors.GREEN
+		if (tally !== undefined && (tally & Tally.ON_AIR) === Tally.ON_AIR) return Colors.RED
+		if (tally !== undefined && (tally & Tally.NEXT) === Tally.ON_AIR) return Colors.GREEN
 		if (classNames.includes(ClassNames.AD_LIB)) return Colors.ORANGE
 		return null
 	}

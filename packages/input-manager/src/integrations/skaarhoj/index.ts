@@ -172,7 +172,7 @@ export class SkaarhojDevice extends Device {
 			if (((feedback.tally ?? 0) & Tally.NEXT) !== 0) {
 				tallyColor = 3
 			}
-			if (((feedback.tally ?? 0) & Tally.CURRENT) !== 0) {
+			if (((feedback.tally ?? 0) & Tally.ON_AIR) !== 0) {
 				tallyColor = 2
 			}
 		} else {
