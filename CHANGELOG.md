@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1-alpha.3](https://github.com/nrkno/sofie-input-gateway/compare/v0.3.1-alpha.2...v0.3.1-alpha.3) (2025-03-24)
+
+
+### Bug Fixes
+
+* add suffix to release ZIP ([0d931b0](https://github.com/nrkno/sofie-input-gateway/commit/0d931b0400eb7650574e7fe13d64bdd8d97a17aa))
+
+
+
+
+
 ## [0.3.1-alpha.2](https://github.com/nrkno/sofie-input-gateway/compare/v0.3.1-alpha.1...v0.3.1-alpha.2) (2025-03-24)
 
 **Note:** Version bump only for package input-gateway-packages

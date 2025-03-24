@@ -1794,7 +1794,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sofie-automation/input-manager@npm:0.3.1-alpha.2, @sofie-automation/input-manager@workspace:packages/input-manager":
+"@sofie-automation/input-manager@npm:0.3.1-alpha.3, @sofie-automation/input-manager@workspace:packages/input-manager":
   version: 0.0.0-use.local
   resolution: "@sofie-automation/input-manager@workspace:packages/input-manager"
   dependencies:
@@ -5770,7 +5770,7 @@ __metadata:
   resolution: "input-gateway@workspace:packages/input-gateway"
   dependencies:
     "@esm2cjs/p-queue": "npm:7.3.0"
-    "@sofie-automation/input-manager": "npm:0.3.1-alpha.2"
+    "@sofie-automation/input-manager": "npm:0.3.1-alpha.3"
     "@sofie-automation/server-core-integration": "npm:1.51.6"
     "@sofie-automation/shared-lib": "npm:1.51.6"
     debug: "npm:^4.3.4"
