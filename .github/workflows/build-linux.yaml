@@ -46,7 +46,7 @@ jobs:
           CI: true
           PKG_CACHE_PATH: ${{ runner.temp }}
         run: |
-          yarn zip-deploy
+          yarn zip-deploy -linux-x64
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
