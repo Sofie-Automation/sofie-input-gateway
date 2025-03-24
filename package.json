@@ -35,7 +35,7 @@
     "verify:build-win32": "node scripts/verify-build-win32.mjs",
 		"verify:build-linux": "node scripts/verify-build-linux.mjs",
     "build-win32": "pkg -t node22-win --public ./packages/input-gateway",
-		"build-linux-x64": "pkg -t node22-linuxstatic-x64 --public ./packages/input-gateway",
+		"build-linux-x64": "pkg -t node22-linux-x64 --public ./packages/input-gateway",
     "sign-executables": "node scripts/sign-executables.mjs",
     "copy-assets": "node scripts/copy-assets.mjs",
     "zip-deploy": "node scripts/zip-deploy.js",
