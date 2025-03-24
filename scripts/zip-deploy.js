@@ -4,7 +4,7 @@ const fs = require('fs/promises')
 
 const packageName = 'input-gateway'
 
-const suffix = process.argv[process.argv.length - 1]
+const suffix = process.argv[2] ?? ''
 
 ;(async () => {
 	const packageJson = await fs.readFile('./packages/input-gateway/package.json')
