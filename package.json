@@ -67,8 +67,5 @@
   "packageManager": "yarn@4.9.1",
   "dependencies": {
     "@yao-pkg/pkg": "^6.5.1"
-  },
-  "resolutions": {
-    "node-hid": "npm:@julusian/hid@3.0.1-0"
   }
 }

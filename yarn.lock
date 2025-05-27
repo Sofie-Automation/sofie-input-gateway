@@ -8027,16 +8027,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-hid@npm:@julusian/hid@3.0.1-0":
-  version: 3.0.1-0
-  resolution: "@julusian/hid@npm:3.0.1-0"
+"node-hid@npm:^3.0.0, node-hid@npm:^3.1.0":
+  version: 3.1.2
+  resolution: "node-hid@npm:3.1.2"
   dependencies:
     node-addon-api: "npm:^3.2.1"
     node-gyp: "npm:latest"
-    pkg-prebuilds: "npm:^0.2.1"
+    pkg-prebuilds: "npm:^1.0.0"
   bin:
     hid-showdevices: src/show-devices.js
-  checksum: 10/5b7302a3b37503bdb8c491979baa450cb7e03db73398681df69b19aa554719aae0b57048bf095779a933fe0bc88995c1687314a2d9db588170ce6352b510d31a
+  checksum: 10/a43450edc439792462a0291d08dc63a417c5eb1f86680aab5da7828371b6eff3d75ceeadc8de545b9bdd68510d907c3dab541bbbb9d26c4e36c4dedc2b3ca88a
   languageName: node
   linkType: hard
 
@@ -9103,18 +9103,6 @@ __metadata:
   dependencies:
     find-up: "npm:^4.0.0"
   checksum: 10/9863e3f35132bf99ae1636d31ff1e1e3501251d480336edb1c211133c8d58906bed80f154a1d723652df1fda91e01c7442c2eeaf9dc83157c7ae89087e43c8d6
-  languageName: node
-  linkType: hard
-
-"pkg-prebuilds@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "pkg-prebuilds@npm:0.2.1"
-  dependencies:
-    yargs: "npm:^17.5.1"
-  bin:
-    pkg-prebuilds-copy: bin/copy.mjs
-    pkg-prebuilds-verify: bin/verify.mjs
-  checksum: 10/b54bbde733925bcb45bd409a879eeb91930247adb4985f8ea781494db20963c5703c88055aa83630a4894f5b09b67560eb12d4abbae0f7559bf41b6de577c92b
   languageName: node
   linkType: hard
 
