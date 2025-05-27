@@ -465,38 +465,51 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@elgato-stream-deck/core@npm:7.1.2":
-  version: 7.1.2
-  resolution: "@elgato-stream-deck/core@npm:7.1.2"
+"@elgato-stream-deck/core@npm:7.2.0":
+  version: 7.2.0
+  resolution: "@elgato-stream-deck/core@npm:7.2.0"
   dependencies:
     eventemitter3: "npm:^5.0.1"
-    tslib: "npm:^2.7.0"
-  checksum: 10/2231b37f11f9ec7fe3a26e9315391974843f6043e511af5585bc4ac182145cbfcd97ca1c223da5613a418bff81d1ca55e48107e3bbbe94f2789e3b41ce911634
+    tslib: "npm:^2.8.1"
+  checksum: 10/d0f3056b6b0975104db0754d156d98e14793c5a368cc031f55ef67c991f500cadceca49d1be77dd2fb423bf979e1448cd0037686b4cab2184b617ec6a35ee167
   languageName: node
   linkType: hard
 
-"@elgato-stream-deck/node-lib@npm:7.1.2":
-  version: 7.1.2
-  resolution: "@elgato-stream-deck/node-lib@npm:7.1.2"
+"@elgato-stream-deck/node-lib@npm:7.2.0":
+  version: 7.2.0
+  resolution: "@elgato-stream-deck/node-lib@npm:7.2.0"
   dependencies:
     jpeg-js: "npm:^0.4.4"
-    tslib: "npm:^2.6.3"
+    tslib: "npm:^2.8.1"
   peerDependencies:
     "@julusian/jpeg-turbo": ^1.1.2 || ^2.0.0
-  checksum: 10/133e560590bffd5b023a0ac2a385ebed015defa963b9fe63a2445e129217c590bd9ee12400623dc7ca05cd718a332a695f3393ab4fdfdf28dcdbffaccf33459d
+  checksum: 10/eaea1a1bb5b9f5896459f8e28e727de8e4426a012e76bbab33e086ecdb334503f7e8a7fbcb2b46fdc13e166a075f4c3ec6a75448252b864474c2a196d4330fcf
   languageName: node
   linkType: hard
 
-"@elgato-stream-deck/node@npm:7.1.2":
-  version: 7.1.2
-  resolution: "@elgato-stream-deck/node@npm:7.1.2"
+"@elgato-stream-deck/node@npm:7.2.0":
+  version: 7.2.0
+  resolution: "@elgato-stream-deck/node@npm:7.2.0"
   dependencies:
-    "@elgato-stream-deck/core": "npm:7.1.2"
-    "@elgato-stream-deck/node-lib": "npm:7.1.2"
+    "@elgato-stream-deck/core": "npm:7.2.0"
+    "@elgato-stream-deck/node-lib": "npm:7.2.0"
     eventemitter3: "npm:^5.0.1"
-    node-hid: "npm:^3.1.0"
-    tslib: "npm:^2.7.0"
-  checksum: 10/95e0170bde21e705edf35a85da52e9b4ce196b0fb5a13f6a7197c187fa6ff7a8d2a60849aad784bce43715534994be8b9f90ec149352bc489cf6eb56d8167e7b
+    node-hid: "npm:^3.1.2"
+    tslib: "npm:^2.8.1"
+  checksum: 10/419e435ca045cbfc080a7242097565c5acbff0c667d88ac766d7a718a52efdf86cca385d4a33a6a92fc50084690db15e34b6be418fbda862a35060ea25bcab4e
+  languageName: node
+  linkType: hard
+
+"@elgato-stream-deck/tcp@npm:7.2.0":
+  version: 7.2.0
+  resolution: "@elgato-stream-deck/tcp@npm:7.2.0"
+  dependencies:
+    "@elgato-stream-deck/core": "npm:7.2.0"
+    "@elgato-stream-deck/node-lib": "npm:7.2.0"
+    "@julusian/bonjour-service": "npm:^1.3.0-2"
+    eventemitter3: "npm:^5.0.1"
+    tslib: "npm:^2.8.1"
+  checksum: 10/e2ada1d0716d32bbbed38942a24e00cadd888abb9aedb7f7645cf40732ec4081d47264e6085c4b841249aedb2ddb3740a1f729587bbab8520fb81314f2aa6624
   languageName: node
   linkType: hard
 
@@ -930,6 +943,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@julusian/bonjour-service@npm:^1.3.0-2":
+  version: 1.3.0-2
+  resolution: "@julusian/bonjour-service@npm:1.3.0-2"
+  dependencies:
+    fast-deep-equal: "npm:^3.1.3"
+    multicast-dns: "npm:^7.2.5"
+  checksum: 10/448bfce212f0acad8921b6b95a52444587a732a53b4104fbd5d999c9f3bbea3e7e64d21d93dbe5688d754f4166351f6f73894dd5bd26cf4060079cf6e81f723b
+  languageName: node
+  linkType: hard
+
 "@julusian/jpeg-turbo@npm:^2.1.0":
   version: 2.1.0
   resolution: "@julusian/jpeg-turbo@npm:2.1.0"
@@ -949,6 +972,13 @@ __metadata:
     node-gyp: "npm:latest"
     pkg-prebuilds: "npm:^1.0.0"
   checksum: 10/72752a8961437abe9c86ff0248eae18125cd7c53c0d98cc929129ec65b8807c3d744c972d069b0e547a7caf80a977db6d032d29c73d59c04f1db8ccf35593b89
+  languageName: node
+  linkType: hard
+
+"@leichtgewicht/ip-codec@npm:^2.0.1":
+  version: 2.0.5
+  resolution: "@leichtgewicht/ip-codec@npm:2.0.5"
+  checksum: 10/cb98c608392abe59457a14e00134e7dfa57c0c9b459871730cd4e907bb12b834cbd03e08ad8663fea9e486f260da7f1293ccd9af0376bf5524dd8536192f248c
   languageName: node
   linkType: hard
 
@@ -1752,7 +1782,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@sofie-automation/input-manager@workspace:packages/input-manager"
   dependencies:
-    "@elgato-stream-deck/node": "npm:7.1.2"
+    "@elgato-stream-deck/node": "npm:7.2.0"
+    "@elgato-stream-deck/tcp": "npm:7.2.0"
     "@julusian/jpeg-turbo": "npm:^2.1.0"
     "@types/fold-to-ascii": "npm:^5.0.2"
     easymidi: "npm:^3.1.0"
@@ -3999,6 +4030,15 @@ __metadata:
   dependencies:
     path-type: "npm:^4.0.0"
   checksum: 10/fa05e18324510d7283f55862f3161c6759a3f2f8dbce491a2fc14c8324c498286c54282c1f0e933cb930da8419b30679389499b919122952a4f8592362ef4615
+  languageName: node
+  linkType: hard
+
+"dns-packet@npm:^5.2.2":
+  version: 5.6.1
+  resolution: "dns-packet@npm:5.6.1"
+  dependencies:
+    "@leichtgewicht/ip-codec": "npm:^2.0.1"
+  checksum: 10/ef5496dd5a906e22ed262cbe1a6f5d532c0893c4f1884a7aa37d4d0d8b8376a2b43f749aab087c8bb1354d67b40444f7fca8de4017b161a4cea468543061aed3
   languageName: node
   linkType: hard
 
@@ -7801,6 +7841,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multicast-dns@npm:^7.2.5":
+  version: 7.2.5
+  resolution: "multicast-dns@npm:7.2.5"
+  dependencies:
+    dns-packet: "npm:^5.2.2"
+    thunky: "npm:^1.0.2"
+  bin:
+    multicast-dns: cli.js
+  checksum: 10/e9add8035fb7049ccbc87b1b069f05bb3b31e04fe057bf7d0116739d81295165afc2568291a4a962bee01a5074e475996816eed0f50c8110d652af5abb74f95a
+  languageName: node
+  linkType: hard
+
 "multimatch@npm:5.0.0":
   version: 5.0.0
   resolution: "multimatch@npm:5.0.0"
@@ -8026,7 +8078,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-hid@npm:^3.0.0, node-hid@npm:^3.1.0":
+"node-hid@npm:^3.0.0, node-hid@npm:^3.1.2":
   version: 3.1.2
   resolution: "node-hid@npm:3.1.2"
   dependencies:
@@ -10671,6 +10723,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"thunky@npm:^1.0.2":
+  version: 1.1.0
+  resolution: "thunky@npm:1.1.0"
+  checksum: 10/825e3bd07ab3c9fd6f753c457a60957c628cacba5dd0656fd93b037c445e2828b43cf0805a9f2b16b0c5f5a10fd561206271acddb568df4f867f0aea0eb2772f
+  languageName: node
+  linkType: hard
+
 "timeline-state-resolver-types@npm:9.3.0-release52.2":
   version: 9.3.0-release52.2
   resolution: "timeline-state-resolver-types@npm:9.3.0-release52.2"
@@ -10888,7 +10947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.6.2, tslib@npm:^2.6.3, tslib@npm:^2.7.0, tslib@npm:^2.8.1":
+"tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.6.2, tslib@npm:^2.6.3, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10/3e2e043d5c2316461cb54e5c7fe02c30ef6dccb3384717ca22ae5c6b5bc95232a6241df19c622d9c73b809bea33b187f6dbc73030963e29950c2141bc32a79f7

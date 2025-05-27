@@ -34,7 +34,7 @@ export interface StatusChangeEventArgs {
 	status: StatusCode
 }
 
-type DeviceEvents = {
+export type DeviceEvents = {
 	/** A notification that a trigger was triggered, call this.getNextTrigger() to get it when it's time to send it to Core. */
 	trigger: []
 	statusChange: [e: StatusChangeEventArgs]
@@ -60,11 +60,11 @@ export abstract class Device extends EventEmitter<DeviceEvents> {
 		this.removeAllListeners()
 	}
 
-	protected addTriggerEvent(triggerEvent: TriggerEvent): void {
+	public addTriggerEvent(triggerEvent: TriggerEvent): void {
 		this.#triggerEvents.push(triggerEvent)
 		this.emit('trigger')
 	}
-	protected updateTriggerAnalog<T extends TriggerEventArguments>(
+	public updateTriggerAnalog<T extends TriggerEventArguments>(
 		triggerEvent: Omit<TriggerEvent, 'arguments'>,
 		updateArgumnets: (triggerAnalog: T | undefined) => T
 	): void {
