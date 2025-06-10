@@ -9,6 +9,8 @@ export interface StreamDeckDeviceOptions {
 	path?: string
 	serialNumber?: string
 	index?: number
+	ip?: string
+	port?: number
 	brightness?: number
 	stylePresets?: {
 		[k: string]: StreamdeckStylePreset
