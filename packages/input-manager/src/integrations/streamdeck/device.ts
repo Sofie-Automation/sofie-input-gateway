@@ -246,7 +246,7 @@ export class StreamDeckDeviceHandler {
 					dimensions.height,
 					isDown
 				)
-				await this.streamDeck?.fillKeyBuffer(key, imgBuffer, {
+				await streamdeck.fillKeyBuffer(key, imgBuffer, {
 					format: 'rgba',
 				})
 			} else if (lcdSegment !== undefined) {
