@@ -52,7 +52,7 @@
 		]
 	},
 	"engines": {
-		"node": "^18.19"
+		"node": "^22.15"
 	},
 	"files": [
 		"/dist",
@@ -74,8 +74,8 @@
 	"dependencies": {
 		"@esm2cjs/p-queue": "7.3.0",
 		"@sofie-automation/input-manager": "0.3.1-alpha.3",
-		"@sofie-automation/server-core-integration": "1.51.6",
-		"@sofie-automation/shared-lib": "1.51.6",
+		"@sofie-automation/server-core-integration": "1.52.0-nightly-release52-20250507-090800-3f13e1f.0",
+		"@sofie-automation/shared-lib": "1.52.0-nightly-release52-20250507-090800-3f13e1f.0",
 		"debug": "^4.3.4",
 		"eventemitter3": "5.0.1",
 		"p-all": "5.0.0",

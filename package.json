@@ -46,7 +46,7 @@
   "devDependencies": {
     "@sofie-automation/code-standard-preset": "~2.5.2",
     "@types/jest": "^29.5.12",
-    "@types/node": "^18.19.33",
+    "@types/node": "^22.15.21",
     "@types/sprintf-js": "^1.1.4",
     "@types/underscore": "^1.11.15",
     "concurrently": "^8.2.2",
@@ -64,11 +64,8 @@
     "zip-a-folder": "^3.1.6"
   },
   "prettier": "@sofie-automation/code-standard-preset/.prettierrc.json",
-  "packageManager": "yarn@4.2.2",
+  "packageManager": "yarn@4.9.1",
   "dependencies": {
-    "@yao-pkg/pkg": "6.2.0"
-  },
-  "resolutions": {
-    "node-hid": "npm:@julusian/hid@3.0.1-0"
+    "@yao-pkg/pkg": "^6.5.1"
   }
 }
