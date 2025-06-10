@@ -65,7 +65,7 @@
 		"generate-schema-types": "node ./scripts/schema-types.mjs"
 	},
 	"engines": {
-		"node": "^18.19"
+		"node": "^22.15"
 	},
 	"lint-staged": {
 		"*.{css,json,md,scss}": [
@@ -91,7 +91,8 @@
 		"production"
 	],
 	"dependencies": {
-		"@elgato-stream-deck/node": "7.1.2",
+		"@elgato-stream-deck/node": "7.3.0",
+		"@elgato-stream-deck/tcp": "7.3.0",
 		"@julusian/jpeg-turbo": "^2.1.0",
 		"easymidi": "^3.1.0",
 		"eventemitter3": "5.0.1",
