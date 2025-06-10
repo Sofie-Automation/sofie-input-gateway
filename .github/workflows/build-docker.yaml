@@ -1,0 +1,157 @@
+name: Build Docker
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+      - 'release**'
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  check-build-steps:
+    name: Check if build and push should be performed
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    outputs:
+      dockerhub-enable: ${{ steps.dockerhub.outputs.dockerhub-publish }}
+      ghcr-enable: ${{ steps.check-ghcr.outputs.enable }}
+      build-and-push-enable: ${{ steps.check-build-and-push.outputs.enable }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Determine if images should be published to DockerHub
+        id: dockerhub
+        run: |
+          # check if a release branch, or main, or a tag
+          if [[ "${{ github.ref }}" =~ ^refs/heads/release([0-9]+)$ || "${{ github.ref }}" == "refs/heads/main" || "${{ github.ref }}" == refs/tags/* ]]
+          then
+            DOCKERHUB_PUBLISH="1"
+          else
+            DOCKERHUB_PUBLISH="0"
+          fi
+          # debug output
+          echo "dockerhub-publish $DOCKERHUB_PUBLISH"
+          echo "dockerhub-publish=$DOCKERHUB_PUBLISH" >> $GITHUB_OUTPUT
+
+      - name: Check if push to GHCR is enabled
+        id: check-ghcr
+        env:
+          GHCR_ENABLED: ${{ secrets.GHCR_ENABLED }}
+        run: |
+          echo "Enable push to GHCR: ${{ env.GHCR_ENABLED != '' }}"
+          echo "enable=${{ env.GHCR_ENABLED != '' }}" >> $GITHUB_OUTPUT
+
+      - name: Check if there is access to repo secrets (needed for build and push)
+        if: steps.dockerhub.outputs.dockerhub-publish == '1' || steps.check-ghcr.outputs.enable == 'true'
+        id: check-build-and-push
+        env:
+          SECRET_ACCESS: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          echo "Enable build and push: ${{ env.SECRET_ACCESS != '' }}"
+          echo "enable=${{ env.SECRET_ACCESS != '' }}" >> $GITHUB_OUTPUT
+
+  build:
+    name: Build and publish docker image for ${{ matrix.repo }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs:
+      - check-build-steps
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Get the docker tag for GHCR
+        id: ghcr-tag
+        if: needs.check-build-steps.outputs.build-and-push-enable == 'true'
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=nightly,enable={{is_default_branch}}
+
+      - name: Get the docker tag for DockerHub
+        id: dockerhub-tag
+        if: needs.check-build-steps.outputs.build-and-push-enable == 'true'
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            sofietv/input-gateway
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=nightly,enable={{is_default_branch}}
+
+      - name: Set up Docker Buildx
+        if: needs.check-build-steps.outputs.build-and-push-enable == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        if: needs.check-build-steps.outputs.build-and-push-enable == 'true' && needs.check-build-steps.outputs.dockerhub-enable == '1'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        if: needs.check-build-steps.outputs.build-and-push-enable == 'true' && needs.check-build-steps.outputs.ghcr-enable == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push to GHCR
+        if: needs.check-build-steps.outputs.build-and-push-enable == 'true' && needs.check-build-steps.outputs.ghcr-enable == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          provenance: false
+          labels: ${{ steps.ghcr-tag.outputs.labels }}
+          tags: '${{ steps.ghcr-tag.outputs.tags }}'
+
+      - name: Build and push to DockerHub
+        if: needs.check-build-steps.outputs.build-and-push-enable == 'true' && needs.check-build-steps.outputs.dockerhub-enable == '1'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          provenance: false
+          labels: ${{ steps.dockerhub-tag.outputs.labels }}
+          tags: '${{ steps.dockerhub-tag.outputs.tags }}'
+
+  trivy-scanning:
+    name: Run Trivy scan for ${{ matrix.repo }}
+    uses: nrkno/github-workflow-docker-build-push/.github/workflows/workflow.yaml@v4.3.0
+    with:
+      runs-on: "['ubuntu-latest']"
+      registry-url: ghcr.io
+      name: nrkno/sofie-package-manager
+      # Don't actually push any images, this is just for trivy scanning for now
+      push: false
+      trivy-severity: 'CRITICAL'
+      trivy-summary-enabled: true
+      trivy-sbom-enabled: true
+      dockerfile: Dockerfile
+    secrets:
+      registry-username: ${{ github.repository_owner }}
+      registry-password: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.GITHUB_TOKEN }}
