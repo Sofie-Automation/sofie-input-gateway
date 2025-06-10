@@ -8,7 +8,7 @@ WORKDIR /src
 
 COPY package.json tsconfig.json yarn.lock lerna.json .yarnrc.yml ./
 COPY scripts ./scripts
-COPY .yarn ./.yarn
+# COPY .yarn ./.yarn
 
 # Pakcages
 COPY packages ./packages

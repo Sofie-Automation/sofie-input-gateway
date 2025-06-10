@@ -52,7 +52,7 @@ jobs:
         if: steps.dockerhub.outputs.dockerhub-publish == '1' || steps.check-ghcr.outputs.enable == 'true'
         id: check-build-and-push
         env:
-          SECRET_ACCESS: ${{ secrets.DOCKERHUB_USERNAME }}
+          SECRET_ACCESS: ${{ secrets.DOCKERHUB_USERNAME || secrets.GHCR_ENABLED }}
         run: |
           echo "Enable build and push: ${{ env.SECRET_ACCESS != '' }}"
           echo "enable=${{ env.SECRET_ACCESS != '' }}" >> $GITHUB_OUTPUT
