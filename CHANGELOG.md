@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/Sofie-Automation/sofie-input-gateway/compare/v0.3.1-alpha.3...v0.4.0) (2025-07-01)
+
+
+### Features
+
+* docker image ([02313be](https://github.com/Sofie-Automation/sofie-input-gateway/commit/02313be8338174228487a0da00a756472e22df6c))
+* support ip streamdecks ([#26](https://github.com/Sofie-Automation/sofie-input-gateway/issues/26)) ([1ed0913](https://github.com/Sofie-Automation/sofie-input-gateway/commit/1ed091345cd61288a41c59717196e3def2bb7a00))
+
+
+
+
+
 ## [0.3.1-alpha.3](https://github.com/nrkno/sofie-input-gateway/compare/v0.3.1-alpha.2...v0.3.1-alpha.3) (2025-03-24)
 
 
