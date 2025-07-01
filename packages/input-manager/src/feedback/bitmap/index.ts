@@ -5,6 +5,7 @@ import path from 'path'
 import fs from 'fs/promises'
 import { constants as fsConstants } from 'fs'
 import process from 'process'
+import { Logger } from '../../logger'
 
 async function makeBitmapFromFeedback(
 	feedback: SomeBitmapFeedback,
@@ -12,8 +13,7 @@ async function makeBitmapFromFeedback(
 	height: number,
 	isPressed: boolean
 ): Promise<Buffer> {
-	const canvas = new Canvas(width, height)
-	const ctx = canvas.getContext('2d')
+	const { ctx } = createCanvasAndContext()
 
 	ctx.fillStyle = 'black'
 	ctx.fillRect(0, 0, width, height)
@@ -47,10 +47,12 @@ export async function getBitmap(
 	return bitmap
 }
 
-export async function init(): Promise<void> {
+export async function init(logger: Logger): Promise<void> {
 	// Create a canvas, just to boot up Skia, load the fonts, etc.
-	const canvas = new Canvas()
-	const ctx = canvas.getContext('2d')
+	const { canvas, ctx } = createCanvasAndContext()
+	logger.silly(
+		`skia-canvas initialized, using GPU: ${canvas.gpu}, engine info: ${JSON.stringify((canvas as any).engine)}`
+	)
 
 	const fonts = ['roboto-condensed-regular.ttf', 'roboto-condensed-700.ttf']
 
@@ -61,8 +63,10 @@ export async function init(): Promise<void> {
 	]
 
 	const foundFiles = await findFiles(fonts, searchPaths)
+	logger.silly(`Found ${foundFiles.length} fonts to be loaded`)
 
 	FontLibrary.use('RobotoCnd', foundFiles)
+	logger.silly('Fonts loaded into FontLibrary')
 
 	void canvas, ctx
 }
@@ -84,4 +88,16 @@ async function findFiles(files: string[], paths: string[]): Promise<string[]> {
 	}
 
 	return result
+}
+
+function createCanvasAndContext(width?: number, height?: number) {
+	const canvas = new Canvas(width, height)
+
+	if (process.env['SKIA_CANVAS_DISABLE_GPU'] === '1') {
+		canvas.gpu = false
+	}
+
+	const ctx = canvas.getContext('2d')
+
+	return { canvas, ctx }
 }

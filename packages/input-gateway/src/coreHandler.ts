@@ -4,24 +4,21 @@ import {
 	DDPConnectorOptions,
 	PeripheralDevicePubSub,
 	PeripheralDevicePubSubCollectionsNames,
+	StatusCode,
+	PeripheralDeviceId,
+	PeripheralDeviceAPI,
+	protectString,
+	unprotectString,
+	stringifyError,
+	PeripheralDeviceCommand,
 } from '@sofie-automation/server-core-integration'
-import { StatusCode } from '@sofie-automation/shared-lib/dist/lib/status'
+import { PeripheralDeviceCommandId } from '@sofie-automation/shared-lib/dist/core/model/Ids'
 import _ from 'underscore'
 import * as Winston from 'winston'
 import { DeviceConfig } from './inputManagerHandler'
 import fs from 'fs'
 import { INPUT_DEVICE_CONFIG } from './configManifest'
-import { PeripheralDeviceCommandId, PeripheralDeviceId } from '@sofie-automation/shared-lib/dist/core/model/Ids'
-import {
-	PeripheralDeviceCategory,
-	PeripheralDeviceSubType,
-	PeripheralDeviceType,
-	PERIPHERAL_SUBTYPE_PROCESS,
-} from '@sofie-automation/shared-lib/dist/peripheralDevice/peripheralDeviceAPI'
-import { protectString, unprotectString } from '@sofie-automation/shared-lib/dist/lib/protectedString'
-import { PeripheralDeviceCommand } from '@sofie-automation/shared-lib/dist/core/model/PeripheralDeviceCommand'
 import { Process } from './process'
-import { stringifyError } from '@sofie-automation/shared-lib/dist/lib/stringifyError'
 import path from 'path'
 
 export interface CoreConfig {
@@ -73,9 +70,7 @@ export class CoreHandler {
 		this._coreConfig = config
 		this._process = process
 
-		this.core = new CoreConnection(
-			this.getCoreConnectionOptions('Input Gateway', 'InputGateway', PERIPHERAL_SUBTYPE_PROCESS)
-		)
+		this.core = new CoreConnection(this.getCoreConnectionOptions())
 
 		this.core.onConnected(() => {
 			this.logger.info('Core Connected!')
@@ -104,10 +99,10 @@ export class CoreHandler {
 		}
 		await this.core.init(ddpConfig)
 		this.logger.info('Core id: ' + this.core.deviceId)
-		this._statusInitialized = true
-		await this.updateCoreStatus()
-
 		await this.setupObserversAndSubscriptions()
+		if (this._onConnected) this._onConnected()
+
+		this._statusInitialized = true
 
 		await this.updateCoreStatus()
 	}
@@ -140,20 +135,20 @@ export class CoreHandler {
 			await this.core.destroy()
 		}
 	}
-	getCoreConnectionOptions(name: string, subDeviceId: string, subDeviceType?: PeripheralDeviceSubType): CoreOptions {
+	private getCoreConnectionOptions(): CoreOptions {
 		if (!this._deviceOptions.deviceId) {
 			// this.logger.warn('DeviceId not set, using a temporary random id!')
 			throw new Error('DeviceId is not set!')
 		}
 
 		const options: CoreOptions = {
-			deviceId: protectString(this._deviceOptions.deviceId + subDeviceId),
+			deviceId: protectString(this._deviceOptions.deviceId + 'InputGateway'),
 			deviceToken: this._deviceOptions.deviceToken,
 
-			deviceCategory: PeripheralDeviceCategory.TRIGGER_INPUT,
-			deviceType: PeripheralDeviceType.INPUT,
+			deviceCategory: PeripheralDeviceAPI.PeripheralDeviceCategory.TRIGGER_INPUT,
+			deviceType: PeripheralDeviceAPI.PeripheralDeviceType.INPUT,
 
-			deviceName: name,
+			deviceName: 'Input Gateway',
 			watchDog: this._coreConfig ? this._coreConfig.watchdog : true,
 
 			configManifest: {
@@ -169,7 +164,6 @@ export class CoreHandler {
 			options.deviceToken = 'unsecureToken'
 		}
 
-		if (subDeviceType === PERIPHERAL_SUBTYPE_PROCESS) options.versions = this._getVersions()
 		return options
 	}
 	onConnected(fcn: () => any): void {
@@ -199,7 +193,7 @@ export class CoreHandler {
 				this.logger.info('Loglevel: ' + this.logger.level)
 			}
 
-			this.logger.info('Changed PeripheralDevice: ' + JSON.stringify(device))
+			this.logger.info('Changed PeripheralDevice')
 			if (this._onChanged) this._onChanged()
 		}
 	}

@@ -1,7 +1,7 @@
 import { CoreHandler, CoreConfig } from './coreHandler'
 import { Logger } from 'winston'
 import { Process } from './process'
-import { PeripheralDeviceId } from '@sofie-automation/shared-lib/dist/core/model/Ids'
+import { PeripheralDeviceId } from '@sofie-automation/server-core-integration'
 
 export interface Config {
 	process: ProcessConfig

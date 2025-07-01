@@ -1,4 +1,4 @@
-import { protectString } from '@sofie-automation/shared-lib/dist/lib/protectedString'
+import { protectString } from '@sofie-automation/server-core-integration'
 import { Config } from './connector'
 
 // CLI arguments / Environment variables --------------
