@@ -1798,29 +1798,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sofie-automation/server-core-integration@npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0":
-  version: 1.52.0-nightly-release52-20250507-090800-3f13e1f.0
-  resolution: "@sofie-automation/server-core-integration@npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
+"@sofie-automation/server-core-integration@npm:1.53.0-nightly-release53-20250702-092104-8eba5bc.0":
+  version: 1.53.0-nightly-release53-20250702-092104-8eba5bc.0
+  resolution: "@sofie-automation/server-core-integration@npm:1.53.0-nightly-release53-20250702-092104-8eba5bc.0"
   dependencies:
-    "@sofie-automation/shared-lib": "npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
+    "@sofie-automation/shared-lib": "npm:1.53.0-nightly-release53-20250702-092104-8eba5bc.0"
     ejson: "npm:^2.2.3"
     faye-websocket: "npm:^0.11.4"
     got: "npm:^11.8.6"
     tslib: "npm:^2.8.1"
     underscore: "npm:^1.13.7"
-  checksum: 10/0a3d71df898e186b230d0665be9a08c54dbd167f2fa91b58be3fa58b4118f0b898de986b125e83905c83ff61132ecc81222b212753511dc2a5f9e693902e73f7
+  checksum: 10/ddae7408e31d60387659a3b73ce4eb4d9fafbd9d194b378db108cc60e0a1f0d7f3a9bf426141edc0c09c53b03a6d694e43d071cd87f70a3642619e9733083e46
   languageName: node
   linkType: hard
 
-"@sofie-automation/shared-lib@npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0":
-  version: 1.52.0-nightly-release52-20250507-090800-3f13e1f.0
-  resolution: "@sofie-automation/shared-lib@npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
+"@sofie-automation/shared-lib@npm:1.53.0-nightly-release53-20250702-092104-8eba5bc.0":
+  version: 1.53.0-nightly-release53-20250702-092104-8eba5bc.0
+  resolution: "@sofie-automation/shared-lib@npm:1.53.0-nightly-release53-20250702-092104-8eba5bc.0"
   dependencies:
     "@mos-connection/model": "npm:^4.2.2"
     timeline-state-resolver-types: "npm:9.3.0-release52.2"
     tslib: "npm:^2.8.1"
     type-fest: "npm:^4.33.0"
-  checksum: 10/eb345067d1e87ffe348f7f23a92f74cc5aa3ded63895cababa24c3c514c3e995b8bf4d29dce048ae533449e3471ec0aaf90d04415902ea8179a3de9fc6e98869
+  checksum: 10/3a44bdb5ab4046352a5ad8f5ea37660208cb683df959d20cf1f454a34f1dd0cf6b73a85ef9770637fdfa76b49cb6126310ab054fedbef7051c1391fff2611018
   languageName: node
   linkType: hard
 
@@ -5764,8 +5764,8 @@ __metadata:
   dependencies:
     "@esm2cjs/p-queue": "npm:7.3.0"
     "@sofie-automation/input-manager": "npm:0.4.0"
-    "@sofie-automation/server-core-integration": "npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
-    "@sofie-automation/shared-lib": "npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
+    "@sofie-automation/server-core-integration": "npm:1.53.0-nightly-release53-20250702-092104-8eba5bc.0"
+    "@sofie-automation/shared-lib": "npm:1.53.0-nightly-release53-20250702-092104-8eba5bc.0"
     debug: "npm:^4.3.4"
     eventemitter3: "npm:5.0.1"
     p-all: "npm:5.0.0"
