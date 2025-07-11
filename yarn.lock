@@ -1798,29 +1798,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@sofie-automation/server-core-integration@npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0":
-  version: 1.52.0-nightly-release52-20250507-090800-3f13e1f.0
-  resolution: "@sofie-automation/server-core-integration@npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
+"@sofie-automation/server-core-integration@npm:1.52.0":
+  version: 1.52.0
+  resolution: "@sofie-automation/server-core-integration@npm:1.52.0"
   dependencies:
-    "@sofie-automation/shared-lib": "npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
+    "@sofie-automation/shared-lib": "npm:1.52.0"
     ejson: "npm:^2.2.3"
     faye-websocket: "npm:^0.11.4"
     got: "npm:^11.8.6"
     tslib: "npm:^2.8.1"
     underscore: "npm:^1.13.7"
-  checksum: 10/0a3d71df898e186b230d0665be9a08c54dbd167f2fa91b58be3fa58b4118f0b898de986b125e83905c83ff61132ecc81222b212753511dc2a5f9e693902e73f7
+  checksum: 10/994f60e74aba1f6c866d543e4cbf3de572868af84781b87eca7fdfe568c502f51d1369354785d5f5e0de4949869c7efe269addb267989a67d394c265526a037a
   languageName: node
   linkType: hard
 
-"@sofie-automation/shared-lib@npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0":
-  version: 1.52.0-nightly-release52-20250507-090800-3f13e1f.0
-  resolution: "@sofie-automation/shared-lib@npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
+"@sofie-automation/shared-lib@npm:1.52.0":
+  version: 1.52.0
+  resolution: "@sofie-automation/shared-lib@npm:1.52.0"
   dependencies:
     "@mos-connection/model": "npm:^4.2.2"
     timeline-state-resolver-types: "npm:9.3.0-release52.2"
     tslib: "npm:^2.8.1"
     type-fest: "npm:^4.33.0"
-  checksum: 10/eb345067d1e87ffe348f7f23a92f74cc5aa3ded63895cababa24c3c514c3e995b8bf4d29dce048ae533449e3471ec0aaf90d04415902ea8179a3de9fc6e98869
+  checksum: 10/9f4305c1f7c73efc53f92b0be99c687012efd0d59b17a080820f93ce7355823c14ecd82129f903ab50e2612a786f8fbd02ae50206538002177c92c03aa00c0ea
   languageName: node
   linkType: hard
 
@@ -5764,8 +5764,8 @@ __metadata:
   dependencies:
     "@esm2cjs/p-queue": "npm:7.3.0"
     "@sofie-automation/input-manager": "npm:0.4.0"
-    "@sofie-automation/server-core-integration": "npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
-    "@sofie-automation/shared-lib": "npm:1.52.0-nightly-release52-20250507-090800-3f13e1f.0"
+    "@sofie-automation/server-core-integration": "npm:1.52.0"
+    "@sofie-automation/shared-lib": "npm:1.52.0"
     debug: "npm:^4.3.4"
     eventemitter3: "npm:5.0.1"
     p-all: "npm:5.0.0"
