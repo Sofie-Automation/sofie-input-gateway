@@ -272,31 +272,31 @@ export class StreamDeckDeviceHandler {
 
 		// Find the first match
 		for (const name of styleClassNames) {
-			let stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
-				(preset) => preset.id === name
-			)
+			let stylePreset: StreamdeckStylePreset | undefined
 			if (feedback.tally) {
 				if (feedback.tally & Tally.ACTIVE) {
-					stylePreset =
-						Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
-							(preset) => preset.id === `${name}:active`
-						) || stylePreset
-				} else if (feedback.tally & Tally.NEXT) {
-					stylePreset =
-						Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
-							(preset) => preset.id === `${name}:next`
-						) || stylePreset
-				} else if (feedback.tally & Tally.OTHER) {
-					stylePreset =
-						Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
-							(preset) => preset.id === `${name}:other`
-						) || stylePreset
-				} else if (feedback.tally & Tally.PRESENT) {
-					stylePreset =
-						Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
-							(preset) => preset.id === `${name}:present`
-						) || stylePreset
+					stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+						(preset) => preset.id === `${name}:active`
+					)
 				}
+				if (feedback.tally & Tally.NEXT && !stylePreset) {
+					stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+						(preset) => preset.id === `${name}:next`
+					)
+				}
+				if (feedback.tally & Tally.OTHER && !stylePreset) {
+					stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+						(preset) => preset.id === `${name}:other`
+					)
+				}
+				if (feedback.tally & Tally.PRESENT && !stylePreset) {
+					stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+						(preset) => preset.id === `${name}:present`
+					)
+				}
+			}
+			if (!stylePreset) {
+				Object.values<StreamdeckStylePreset>(this.config.stylePresets).find((preset) => preset.id === name)
 			}
 
 			if (stylePreset) {
