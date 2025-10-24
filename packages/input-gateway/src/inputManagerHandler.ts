@@ -642,7 +642,14 @@ export class InputManagerHandler {
 				.reverse()
 
 			if (previewedAdlibs.length > 0) {
-				tally = tally | Tally.PRESENT
+				tally =
+					tally |
+					Tally.PRESENT |
+					previewedAdlibs.reduce(
+						(acc, adlib) =>
+							acc | (adlib.isActive ? Tally.ACTIVE : Tally.NONE) | (adlib.isNext ? Tally.NEXT : Tally.NONE),
+						Tally.NONE
+					)
 				contentLayerLongName = previewedAdlibs[0].sourceLayerName?.name
 				contentLayerShortName = previewedAdlibs[0].sourceLayerName?.abbreviation
 				contentLabel = previewedAdlibs.map((adlib) => InputManagerHandler.getStringLabel(adlib.label)).join(', ')

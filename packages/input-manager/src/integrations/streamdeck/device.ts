@@ -7,7 +7,7 @@ import { StreamDeckTcp } from '@elgato-stream-deck/tcp'
 import { Logger } from '../../logger'
 import { FeedbackStore } from '../../devices/feedbackStore'
 import { assertNever, DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib'
-import { BitmapFeedback, Feedback, SomeFeedback } from '../../feedback/feedback'
+import { BitmapFeedback, Feedback, SomeFeedback, Tally } from '../../feedback/feedback'
 import { getBitmap } from '../../feedback/bitmap'
 import { StreamDeckDeviceOptions, StreamdeckStylePreset } from '../../generated'
 
@@ -272,9 +272,34 @@ export class StreamDeckDeviceHandler {
 
 		// Find the first match
 		for (const name of styleClassNames) {
-			const stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
-				(preset) => preset.id === name
-			)
+			let stylePreset: StreamdeckStylePreset | undefined
+			if (feedback.tally) {
+				if (feedback.tally & Tally.ACTIVE) {
+					stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+						(preset) => preset.id === `${name}:active`
+					)
+				}
+				if (feedback.tally & Tally.NEXT && !stylePreset) {
+					stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+						(preset) => preset.id === `${name}:next`
+					)
+				}
+				if (feedback.tally & Tally.OTHER && !stylePreset) {
+					stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+						(preset) => preset.id === `${name}:other`
+					)
+				}
+				if (feedback.tally & Tally.PRESENT && !stylePreset) {
+					stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+						(preset) => preset.id === `${name}:present`
+					)
+				}
+			}
+			if (!stylePreset) {
+				stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+					(preset) => preset.id === name
+				)
+			}
 
 			if (stylePreset) {
 				return {
