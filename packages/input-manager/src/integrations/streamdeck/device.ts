@@ -296,7 +296,9 @@ export class StreamDeckDeviceHandler {
 				}
 			}
 			if (!stylePreset) {
-				Object.values<StreamdeckStylePreset>(this.config.stylePresets).find((preset) => preset.id === name)
+				stylePreset = Object.values<StreamdeckStylePreset>(this.config.stylePresets).find(
+					(preset) => preset.id === name
+				)
 			}
 
 			if (stylePreset) {
