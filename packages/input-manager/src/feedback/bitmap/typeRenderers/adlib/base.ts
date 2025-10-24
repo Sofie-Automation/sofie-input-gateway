@@ -55,8 +55,9 @@ const COLORS: Record<string, string> = {
 }
 
 const TALLY_COLORS: Record<string, string> = {
-	[Tally.CURRENT]: '#ff0000',
+	[Tally.ACTIVE]: '#ff0000',
 	[Tally.NEXT]: '#00ff00',
+	[Tally.OTHER]: '#ffff00',
 }
 
 export class BaseAdLibRenderer extends BaseRenderer {
@@ -69,8 +70,9 @@ export class BaseAdLibRenderer extends BaseRenderer {
 
 	private getTallyColor(tally: Tally | undefined): string | undefined {
 		if (tally === undefined) return undefined
-		if (Tally.CURRENT & tally) return TALLY_COLORS[Tally.CURRENT]
+		if (Tally.ACTIVE & tally) return TALLY_COLORS[Tally.ACTIVE]
 		if (Tally.NEXT & tally) return TALLY_COLORS[Tally.NEXT]
+		if (Tally.OTHER & tally) return TALLY_COLORS[Tally.OTHER]
 		return undefined
 	}
 
