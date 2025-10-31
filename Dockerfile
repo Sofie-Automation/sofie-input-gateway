@@ -28,9 +28,11 @@ RUN rm -r scripts
 # Create deploy-image:
 FROM node:22-alpine
 
-RUN apk add --no-cache fontconfig alsa-lib
+RUN apk add --no-cache fontconfig alsa-lib dumb-init
 
 COPY --from=builder /src /src
 
+# Run as non-root user
+USER 1000
 WORKDIR /src/packages/input-gateway
-ENTRYPOINT ["node", "dist/index.js"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "node", "dist/index.js"]
