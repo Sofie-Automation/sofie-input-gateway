@@ -647,8 +647,7 @@ export class InputManagerHandler {
 					Tally.PRESENT |
 					previewedAdlibs.reduce(
 						(acc, adlib) =>
-							// @ts-expect-error: needs new build of core-integration, but we're on release50, which causes some incompatibilities, even though things just work...
-							acc | (adlib.isCurrent ? Tally.ACTIVE : Tally.NONE) | (adlib.isNext ? Tally.NEXT : Tally.NONE),
+							acc | (adlib.isActive ? Tally.ACTIVE : Tally.NONE) | (adlib.isNext ? Tally.NEXT : Tally.NONE),
 						Tally.NONE
 					)
 				contentLayerLongName = previewedAdlibs[0].sourceLayerName?.name
