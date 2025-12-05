@@ -74,8 +74,8 @@
 	"dependencies": {
 		"@esm2cjs/p-queue": "7.3.0",
 		"@sofie-automation/input-manager": "0.4.0",
-		"@sofie-automation/server-core-integration": "1.52.0-nightly-release52-20250507-090800-3f13e1f.0",
-		"@sofie-automation/shared-lib": "1.52.0-nightly-release52-20250507-090800-3f13e1f.0",
+		"@sofie-automation/server-core-integration": "npm:@nrk/sofie-server-core-integration@1.52.13-nrk",
+		"@sofie-automation/shared-lib": "npm:@nrk/sofie-shared-lib@1.52.13-nrk",
 		"debug": "^4.3.4",
 		"eventemitter3": "5.0.1",
 		"p-all": "5.0.0",

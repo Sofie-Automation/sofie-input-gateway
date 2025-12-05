@@ -130,7 +130,7 @@ export class InputManagerHandler {
 	}
 	initProcess(): void {
 		this.#process = new Process(this.#logger)
-		this.#process.init(this.#config.process)
+		this.#process.init(this.#config.certificates)
 	}
 	async initCore(): Promise<void> {
 		this.#coreHandler = new CoreHandler(this.#logger, this.#config.device)
