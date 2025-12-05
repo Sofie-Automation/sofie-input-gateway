@@ -41,7 +41,8 @@
     "zip-deploy": "node scripts/zip-deploy.js",
     "release": "sofie-version",
     "generate-schema-types": "yarn workspaces foreach --all run generate-schema-types",
-    "g:eslint": "cd $INIT_CWD && \"$PROJECT_CWD/node_modules/.bin/eslint\""
+    "g:eslint": "cd $INIT_CWD && \"$PROJECT_CWD/node_modules/.bin/eslint\"",
+		"g:jest": "cd $INIT_CWD && \"$PROJECT_CWD/node_modules/.bin/jest\""
   },
   "devDependencies": {
     "@sofie-automation/code-standard-preset": "~2.5.2",
