@@ -31,6 +31,10 @@ import {
 	SubscriptionId,
 	PeripheralDevicePubSub,
 	PeripheralDevicePubSubCollectionsNames,
+	HealthEndpoints,
+	IConnector,
+	stringifyError,
+	// HealthEndpoints,
 } from '@sofie-automation/server-core-integration'
 import { literal, sleep } from '@sofie-automation/shared-lib/dist/lib/lib'
 import PQueue from '@esm2cjs/p-queue'
@@ -50,7 +54,7 @@ export interface DeviceConfig {
 	deviceId: PeripheralDeviceId
 	deviceToken: string
 }
-export class InputManagerHandler {
+export class InputManagerHandler implements IConnector {
 	#coreHandler!: CoreHandler
 	#config!: Config
 	#deviceSettings: DeviceSettings | undefined
@@ -69,6 +73,9 @@ export class InputManagerHandler {
 	/** Set of deviceIds to check for triggers to send  */
 	#devicesWithTriggersToSend = new Set<string>()
 
+	public initialized = false
+	public initializedError: string | undefined = undefined
+
 	constructor(logger: Winston.Logger) {
 		this.#logger = logger
 		this.#queue = new PQueue({ concurrency: 1 })
@@ -79,11 +86,15 @@ export class InputManagerHandler {
 
 		try {
 			this.#logger.info('Initializing Process...')
-			this.initProcess()
+			this.#process = new Process(this.#logger)
+			this.#process.init(this.#config.certificates)
 			this.#logger.info('Process initialized')
 
 			this.#logger.info('Initializing Core...')
-			await this.initCore()
+			this.#coreHandler = new CoreHandler(this.#logger, this.#config.device)
+			new HealthEndpoints(this, this.#coreHandler, config.health)
+
+			await this.#coreHandler.init(this.#config.core, this.#process)
 			this.#logger.info('Core initialized')
 
 			const peripheralDevice = await this.#coreHandler.core.getPeripheralDevice()
@@ -108,8 +119,11 @@ export class InputManagerHandler {
 			this.#logger.info('InputManager initialized')
 
 			this.#logger.info('Initialization done')
+			this.initialized = true
 			return
 		} catch (e) {
+			this.initializedError = stringifyError(e)
+
 			this.#logger.error('Error during initialization:')
 			this.#logger.error(e)
 			if (e instanceof Error) this.#logger.error(e.stack)
@@ -127,14 +141,6 @@ export class InputManagerHandler {
 			}, 10 * 1000)
 			return
 		}
-	}
-	initProcess(): void {
-		this.#process = new Process(this.#logger)
-		this.#process.init(this.#config.certificates)
-	}
-	async initCore(): Promise<void> {
-		this.#coreHandler = new CoreHandler(this.#logger, this.#config.device)
-		await this.#coreHandler.init(this.#config.core, this.#process)
 	}
 
 	async initInputManager(settings: DeviceSettings): Promise<void> {
