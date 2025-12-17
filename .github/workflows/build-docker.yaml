@@ -144,7 +144,7 @@ jobs:
     with:
       runs-on: "['ubuntu-latest']"
       registry-url: ghcr.io
-      name: nrkno/sofie-package-manager
+      name: sofie-automation/sofie-input-gateway
       # Don't actually push any images, this is just for trivy scanning for now
       push: false
       trivy-severity: 'CRITICAL'
