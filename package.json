@@ -2,7 +2,7 @@
   "name": "input-gateway-packages",
   "private": true,
   "version": "0.1.0",
-  "homepage": "https://github.com/nrkno/sofie-input-gateway",
+  "homepage": "https://github.com/Sofie-Automation/sofie-input-gateway",
   "workspaces": {
     "packages": [
       "packages/**"
