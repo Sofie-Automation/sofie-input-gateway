@@ -12,6 +12,7 @@ import {
 	stringifyError,
 	PeripheralDeviceCommand,
 	ICoreHandler,
+	KubernetesRestarter,
 } from '@sofie-automation/server-core-integration'
 import { PeripheralDeviceCommandId } from '@sofie-automation/shared-lib/dist/core/model/Ids'
 import _ from 'underscore'
@@ -54,6 +55,8 @@ export class CoreHandler implements ICoreHandler {
 
 	public connectedToCore = false
 
+	private _k8sRestarter?: KubernetesRestarter
+
 	private _processState: {
 		[key: string]: {
 			comments: string[]
@@ -65,6 +68,9 @@ export class CoreHandler implements ICoreHandler {
 		this.logger = logger
 		this._deviceOptions = deviceOptions
 		this._processState = {}
+		if (KubernetesRestarter.canUseK8sRestarter()) {
+			this._k8sRestarter = new KubernetesRestarter(this.logger, 'sofie-input-gateway')
+		}
 	}
 
 	async init(config: CoreConfig, process: Process): Promise<void> {
@@ -284,16 +290,18 @@ export class CoreHandler implements ICoreHandler {
 			}
 		})
 	}
-	killProcess(actually: number): boolean {
-		if (actually === 1) {
-			this.logger.info('KillProcess command received, shutting down in 1000ms!')
+	async killProcess(): Promise<void> {
+		this.logger.info('KillProcess command received for playout-gateway')
+		if (this._k8sRestarter) {
+			this.logger.info('Running on kubernetes was true, restarting deployment')
+			await this._k8sRestarter.restartKube()
+		} else {
+			this.logger.info('killing process in 1000ms!')
 			setTimeout(() => {
 				// eslint-disable-next-line no-process-exit
 				process.exit(0)
 			}, 1000)
-			return true
 		}
-		return false
 	}
 	/* devicesMakeReady (okToDestroyStuff?: boolean): Promise<any> {
 		// TODO: perhaps do something here?
