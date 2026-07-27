@@ -291,7 +291,7 @@ export class CoreHandler implements ICoreHandler {
 		})
 	}
 	async killProcess(): Promise<void> {
-		this.logger.info('KillProcess command received for playout-gateway')
+		this.logger.info('KillProcess command received for input-gateway')
 		if (this._k8sRestarter) {
 			this.logger.info('Running on kubernetes was true, restarting deployment')
 			await this._k8sRestarter.restartKube()
