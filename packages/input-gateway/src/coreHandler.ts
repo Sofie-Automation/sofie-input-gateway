@@ -290,17 +290,18 @@ export class CoreHandler implements ICoreHandler {
 			}
 		})
 	}
-	async killProcess(): Promise<void> {
+	async killProcess(): Promise<boolean> {
 		this.logger.info('KillProcess command received for input-gateway')
 		if (this._k8sRestarter) {
 			this.logger.info('Running on kubernetes was true, restarting deployment')
-			await this._k8sRestarter.restartKube()
+			return await this._k8sRestarter.restartKube()
 		} else {
 			this.logger.info('killing process in 1000ms!')
 			setTimeout(() => {
 				// eslint-disable-next-line no-process-exit
 				process.exit(0)
 			}, 1000)
+			return true;
 		}
 	}
 	/* devicesMakeReady (okToDestroyStuff?: boolean): Promise<any> {
