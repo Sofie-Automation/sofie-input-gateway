@@ -11,6 +11,7 @@ import {
 	unprotectString,
 	stringifyError,
 	PeripheralDeviceCommand,
+	ICoreHandler,
 } from '@sofie-automation/server-core-integration'
 import { PeripheralDeviceCommandId } from '@sofie-automation/shared-lib/dist/core/model/Ids'
 import _ from 'underscore'
@@ -31,7 +32,7 @@ export interface CoreConfig {
 /**
  * Represents a connection between the Core and the media-manager
  */
-export class CoreHandler {
+export class CoreHandler implements ICoreHandler {
 	core!: CoreConnection
 	logger: Winston.Logger
 
@@ -50,6 +51,8 @@ export class CoreHandler {
 
 	private _statusInitialized = false
 	private _statusDestroyed = false
+
+	public connectedToCore = false
 
 	private _processState: {
 		[key: string]: {
@@ -74,11 +77,13 @@ export class CoreHandler {
 
 		this.core.onConnected(() => {
 			this.logger.info('Core Connected!')
+			this.connectedToCore = true
 
 			if (this._onConnected) this._onConnected()
 		})
 		this.core.onDisconnected(() => {
 			this.logger.warn('Core Disconnected!')
+			this.connectedToCore = false
 		})
 		this.core.onError((err) => {
 			if (err instanceof Error) {
@@ -410,5 +415,25 @@ export class CoreHandler {
 			this.logger.error(`Error in _getVersions: ${stringifyError(e)}`)
 		}
 		return versions
+	}
+	getCoreStatus(): {
+		statusCode: StatusCode
+		messages: string[]
+	} {
+		let statusCode = StatusCode.GOOD
+		const messages: string[] = []
+
+		if (!this._statusInitialized) {
+			statusCode = StatusCode.BAD
+			messages.push('Starting up...')
+		}
+		if (this._statusDestroyed) {
+			statusCode = StatusCode.BAD
+			messages.push('Shut down')
+		}
+		return {
+			statusCode,
+			messages,
+		}
 	}
 }

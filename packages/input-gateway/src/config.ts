@@ -1,5 +1,6 @@
 import { protectString } from '@sofie-automation/server-core-integration'
 import { Config } from './connector'
+import _ from 'underscore'
 
 // CLI arguments / Environment variables --------------
 let host: string = process.env.CORE_HOST || '127.0.0.1'
@@ -11,6 +12,8 @@ let deviceToken: string = process.env.DEVICE_TOKEN || ''
 let disableWatchdog: boolean = process.env.DISABLE_WATCHDOG === '1' || false
 let unsafeSSL: boolean = process.env.UNSAFE_SSL === '1' || false
 const certs: string[] = process.env.CERTIFICATES ? process.env.CERTIFICATES.split(';') : []
+
+let healthPort: number | undefined = parseInt(process.env.HEALTH_PORT + '') || undefined
 
 let prevProcessArg = ''
 process.argv.forEach((val) => {
@@ -34,6 +37,10 @@ process.argv.forEach((val) => {
 		nextPrevProcessArg = prevProcessArg // so that we can get multiple certificates
 
 		// arguments with no options:
+	} else if (prevProcessArg.match(/-healthPort/i)) {
+		healthPort = parseInt(val)
+
+		// arguments with no options:
 	} else if (val.match(/-disableWatchdog/i)) {
 		disableWatchdog = true
 	} else if (val.match(/-unsafeSSL/i)) {
@@ -54,9 +61,12 @@ const config: Config = {
 		ssl: ssl,
 		watchdog: !disableWatchdog,
 	},
-	process: {
-		certificates: certs,
+	certificates: {
+		certificates: _.compact(certs),
 		unsafeSSL,
+	},
+	health: {
+		port: healthPort,
 	},
 }
 
