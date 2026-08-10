@@ -8,12 +8,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/nrkno/sofie-input-gateway.git"
+		"url": "git+https://github.com/Sofie-Automation/sofie-input-gateway.git"
 	},
 	"bugs": {
-		"url": "https://github.com/nrkno/sofie-input-gateway/issues"
+		"url": "https://github.com/Sofie-Automation/sofie-input-gateway/issues"
 	},
-	"homepage": "https://github.com/nrkno/sofie-input-gateway#readme",
+	"homepage": "https://github.com/Sofie-Automation/sofie-input-gateway#readme",
 	"contributors": [
 		{
 			"name": "Johan Nyman",
