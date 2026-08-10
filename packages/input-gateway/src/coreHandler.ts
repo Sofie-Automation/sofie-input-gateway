@@ -167,7 +167,7 @@ export class CoreHandler implements ICoreHandler {
 			},
 
 			versions: this._getVersions(),
-			documentationUrl: 'https://github.com/nrkno/sofie-input-gateway',
+			documentationUrl: 'https://github.com/Sofie-Automation/sofie-input-gateway',
 		}
 
 		if (!options.deviceToken) {
