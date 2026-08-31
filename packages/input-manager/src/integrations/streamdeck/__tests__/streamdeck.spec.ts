@@ -1,7 +1,9 @@
 import type { StreamDeckButtonControlDefinition, StreamDeckEncoderControlDefinition } from '@elgato-stream-deck/node'
 import { Symbols } from '../../../lib'
-import { sleep } from '@sofie-automation/shared-lib/dist/lib/lib'
 
+async function sleep(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms))
+}
 const mockBitmapFeedbackFactory = {
 	init: jest.fn(),
 	getBitmap: jest.fn((feedback: any, _width: number, _height: number, isDown: boolean) => {

@@ -12,8 +12,13 @@ import {
 	stringifyError,
 	PeripheralDeviceCommand,
 	ICoreHandler,
+	KubernetesRestarter,
 } from '@sofie-automation/server-core-integration'
 import { PeripheralDeviceCommandId } from '@sofie-automation/shared-lib/dist/core/model/Ids'
+import {
+	DeviceStatusDetail,
+	PeripheralDeviceStatusObject,
+} from '@sofie-automation/shared-lib/dist/peripheralDevice/peripheralDeviceAPI'
 import _ from 'underscore'
 import * as Winston from 'winston'
 import { DeviceConfig } from './inputManagerHandler'
@@ -54,6 +59,8 @@ export class CoreHandler implements ICoreHandler {
 
 	public connectedToCore = false
 
+	private _k8sRestarter?: KubernetesRestarter
+
 	private _processState: {
 		[key: string]: {
 			comments: string[]
@@ -65,6 +72,9 @@ export class CoreHandler implements ICoreHandler {
 		this.logger = logger
 		this._deviceOptions = deviceOptions
 		this._processState = {}
+		if (KubernetesRestarter.canUseK8sRestarter()) {
+			this._k8sRestarter = new KubernetesRestarter(this.logger, 'sofie-input-gateway')
+		}
 	}
 
 	async init(config: CoreConfig, process: Process): Promise<void> {
@@ -284,16 +294,19 @@ export class CoreHandler implements ICoreHandler {
 			}
 		})
 	}
-	killProcess(actually: number): boolean {
-		if (actually === 1) {
-			this.logger.info('KillProcess command received, shutting down in 1000ms!')
+	async killProcess(): Promise<boolean> {
+		this.logger.info('KillProcess command received for input-gateway')
+		if (this._k8sRestarter) {
+			this.logger.info('Running on kubernetes was true, restarting deployment')
+			return await this._k8sRestarter.restartKube()
+		} else {
+			this.logger.info('killing process in 1000ms!')
 			setTimeout(() => {
 				// eslint-disable-next-line no-process-exit
 				process.exit(0)
 			}, 1000)
 			return true
 		}
-		return false
 	}
 	/* devicesMakeReady (okToDestroyStuff?: boolean): Promise<any> {
 		// TODO: perhaps do something here?
@@ -318,29 +331,28 @@ export class CoreHandler implements ICoreHandler {
 	}
 	async updateCoreStatus(): Promise<any> {
 		let statusCode = StatusCode.GOOD
-		const messages: Array<string> = []
-
+		const statusDetails: DeviceStatusDetail[] = []
 		if (this.deviceStatus !== StatusCode.GOOD) {
 			statusCode = this.deviceStatus
 			if (this.deviceMessages) {
 				_.each(this.deviceMessages, (msg) => {
-					messages.push(msg)
+					statusDetails.push({ message: msg })
 				})
 			}
 		}
 		if (!this._statusInitialized) {
 			statusCode = StatusCode.BAD
-			messages.push('Starting up...')
+			statusDetails.push({ message: 'Starting up...' })
 		}
 		if (this._statusDestroyed) {
 			statusCode = StatusCode.BAD
-			messages.push('Shut down')
+			statusDetails.push({ message: 'Shut down' })
 		}
 
 		if (this.core) {
 			await this.core.setStatus({
 				statusCode: statusCode,
-				messages: messages,
+				statusDetails,
 			})
 		}
 	}
@@ -416,24 +428,21 @@ export class CoreHandler implements ICoreHandler {
 		}
 		return versions
 	}
-	getCoreStatus(): {
-		statusCode: StatusCode
-		messages: string[]
-	} {
+	getCoreStatus(): PeripheralDeviceStatusObject {
 		let statusCode = StatusCode.GOOD
-		const messages: string[] = []
+		const statusDetails: DeviceStatusDetail[] = []
 
 		if (!this._statusInitialized) {
 			statusCode = StatusCode.BAD
-			messages.push('Starting up...')
+			statusDetails.push({ message: 'Starting up...' })
 		}
 		if (this._statusDestroyed) {
 			statusCode = StatusCode.BAD
-			messages.push('Shut down')
+			statusDetails.push({ message: 'Shut down' })
 		}
 		return {
 			statusCode,
-			messages,
+			statusDetails,
 		}
 	}
 }
