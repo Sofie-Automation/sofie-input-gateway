@@ -71,7 +71,7 @@ jobs:
           yarn zip-deploy -win-x64
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Windows
           path: deploy
