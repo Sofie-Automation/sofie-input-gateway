@@ -1,9 +1,9 @@
 import { Server } from 'http'
-import { Logger } from '../../logger'
-import { Device, TriggerEventArguments } from '../../devices/device'
-import { HTTPServerOptions } from '../../generated'
 
-import DEVICE_OPTIONS from './$schemas/options.json'
+import { Device, TriggerEventArguments } from '../../devices/device.js'
+import { HTTPServerOptions } from '../../generated/index.js'
+import { Logger } from '../../logger.js'
+import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 const DEFAULT_PORT = 8080
 

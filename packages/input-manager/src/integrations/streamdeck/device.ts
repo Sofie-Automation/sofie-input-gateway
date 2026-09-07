@@ -4,15 +4,15 @@ import {
 	StreamDeckControlDefinition,
 } from '@elgato-stream-deck/node'
 import { StreamDeckTcp } from '@elgato-stream-deck/tcp'
-import { Logger } from '../../logger'
-import { FeedbackStore } from '../../devices/feedbackStore'
-import { assertNever, DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib'
-import { BitmapFeedback, Feedback, SomeFeedback, Tally } from '../../feedback/feedback'
-import { getBitmap } from '../../feedback/bitmap'
-import { StreamDeckDeviceOptions, StreamdeckStylePreset } from '../../generated'
 
-import DEVICE_OPTIONS from './$schemas/options.json'
-import { StreamDeckEventTarget } from './types'
+import { FeedbackStore } from '../../devices/feedbackStore.js'
+import { getBitmap } from '../../feedback/bitmap/index.js'
+import { BitmapFeedback, Feedback, SomeFeedback, Tally } from '../../feedback/feedback.js'
+import { StreamDeckDeviceOptions, StreamdeckStylePreset } from '../../generated/index.js'
+import { assertNever, DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib.js'
+import { Logger } from '../../logger.js'
+import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
+import { StreamDeckEventTarget } from './types.js'
 
 export class StreamDeckDeviceHandler {
 	private readonly logger: Logger
@@ -203,16 +203,19 @@ export class StreamDeckDeviceHandler {
 		let key: number | undefined = undefined
 		let encoder: number | undefined = undefined
 		let lcdSegment: number | undefined = undefined
-		let result = null
-		if ((result = id.match(/^Enc(\d+)$/))) {
-			encoder = Number(result[1]) ?? 0
+		let result = id.match(/^Enc(\d+)$/)
+		if (result) {
+			encoder = Number(result[1] ?? 0)
 			lcdSegment = encoder
 			return { id, key, encoder, lcdSegment, action }
-		} else if ((result = id.match(/^LCD(\d+)$/))) {
-			lcdSegment = encoder
-			return { id, key, encoder, lcdSegment, action }
+		} else {
+			result = id.match(/^LCD(\d+)$/)
+			if (result) {
+				lcdSegment = encoder
+				return { id, key, encoder, lcdSegment, action }
+			}
 		}
-		key = Number(id) ?? 0
+		key = Number(id ?? 0)
 		return { id, key, encoder, lcdSegment, action }
 	}
 

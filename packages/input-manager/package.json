@@ -5,6 +5,7 @@
 	"main": "dist/index.js",
 	"typings": "dist/index.d.ts",
 	"module": "dist/module/index.js",
+	"type": "module",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -53,13 +54,9 @@
 		"lint": "run lint:raw .",
 		"lint-fix": "run lint --fix",
 		"license-validate": "run -T -B sofie-licensecheck",
-		"unit": "run -T g:jest --forceExit",
-		"unitci": "run -T g:jest --forceExit --coverage",
+		"unit": "vitest run",
+		"unitci": "run unit --coverage",
 		"test": "run lint && run unit",
-		"test:integration": "run lint && run -T g:jest --config=jest-integration.config.js",
-		"watch": "run -T g:jest --watch",
-		"cov": "run -T g:jest --coverage && run cov-open",
-		"cov-open": "open-cli coverage/lcov-report/index.html",
 		"validate:dependencies": "yarn npm audit --environment production && run license-validate",
 		"validate:dev-dependencies": "yarn npm audit",
 		"generate-schema-types": "node ./scripts/schema-types.mjs"
@@ -91,8 +88,8 @@
 		"production"
 	],
 	"dependencies": {
-		"@elgato-stream-deck/node": "7.3.0",
-		"@elgato-stream-deck/tcp": "7.3.0",
+		"@elgato-stream-deck/node": "^7.6.3",
+		"@elgato-stream-deck/tcp": "^7.6.3",
 		"@julusian/jpeg-turbo": "^2.1.0",
 		"easymidi": "^3.1.0",
 		"eventemitter3": "5.0.1",
@@ -109,6 +106,11 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@types/fold-to-ascii": "^5.0.2"
+		"@prettier/plugin-oxc": "^0.2.2",
+		"@sofie-automation/code-standard-preset": "*",
+		"@types/fold-to-ascii": "^5.0.2",
+		"eslint": "*",
+		"prettier": "*",
+		"prettier-plugin-ember-template-tag": "^2.1.8"
 	}
 }

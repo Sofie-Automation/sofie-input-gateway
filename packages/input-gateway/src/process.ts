@@ -1,6 +1,8 @@
-import { Logger } from 'winston'
 import * as fs from 'fs'
-import { CertificatesConfig } from './connector'
+
+import { Logger } from 'winston'
+
+import { CertificatesConfig } from './connector.js'
 
 export class Process {
 	logger: Logger

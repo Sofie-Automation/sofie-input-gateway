@@ -5,15 +5,15 @@
  * and run "yarn generate-schema-types" to regenerate this file.
  */
 
-export * from './http'
+export * from './http.js'
 
-export * from './midi'
+export * from './midi.js'
 
-export * from './osc'
+export * from './osc.js'
 
-export * from './skaarhoj'
+export * from './skaarhoj.js'
 
-export * from './streamdeck'
+export * from './streamdeck.js'
 
-export * from './xkeys'
+export * from './xkeys.js'
 

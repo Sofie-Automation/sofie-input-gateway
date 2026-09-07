@@ -1,7 +1,9 @@
-import EventEmitter from 'eventemitter3'
+import { EventEmitter } from 'eventemitter3'
+
 import { StatusCode } from '@sofie-automation/shared-lib/dist/lib/status'
-import { SomeFeedback } from '../feedback/feedback'
-import { Logger } from '../logger'
+
+import { SomeFeedback } from '../feedback/feedback.js'
+import { Logger } from '../logger.js'
 
 /**
  * Description of a "trigger got triggered" event

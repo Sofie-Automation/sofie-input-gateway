@@ -1,6 +1,9 @@
+/* eslint-disable n/no-process-exit */
+
 // @ts-check
 import * as fs from 'fs/promises'
 import * as path from 'path'
+
 import { glob } from 'glob'
 
 const assetsSource = './packages/input-gateway/assets/**/*'

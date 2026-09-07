@@ -1,17 +1,12 @@
-import EventEmitter from 'eventemitter3'
-import { Device, TriggerEvent } from './devices/device'
-import { SomeFeedback } from './feedback/feedback'
-import { HTTPServer } from './integrations/http'
-import { MIDIDevice } from './integrations/midi'
-import { StreamDeckDevice } from './integrations/streamdeck'
-import { XKeysDevice } from './integrations/xkeys'
-import { SkaarhojDevice } from './integrations/skaarhoj'
-import { OSCServer } from './integrations/osc'
-import { throwNever } from './lib'
-import { Logger } from './logger'
-import { init as initBitmapFeedback } from './feedback/bitmap'
-import { DeviceType } from './integrations/deviceType'
+import { EventEmitter } from 'eventemitter3'
+
+import { JSONBlob, JSONBlobStringify } from '@sofie-automation/shared-lib/dist/lib/JSONBlob'
+import { JSONSchema } from '@sofie-automation/shared-lib/dist/lib/JSONSchemaTypes'
 import { StatusCode } from '@sofie-automation/shared-lib/dist/lib/status'
+
+import { Device, TriggerEvent } from './devices/device.js'
+import { init as initBitmapFeedback } from './feedback/bitmap/index.js'
+import { SomeFeedback } from './feedback/feedback.js'
 import {
 	HTTPServerOptions,
 	MIDIControllerOptions,
@@ -19,9 +14,16 @@ import {
 	SkaarhojPanelOptions,
 	StreamDeckDeviceOptions,
 	XKeysDeviceOptions,
-} from './generated'
-import { JSONBlob, JSONBlobStringify } from '@sofie-automation/shared-lib/dist/lib/JSONBlob'
-import { JSONSchema } from '@sofie-automation/shared-lib/dist/lib/JSONSchemaTypes'
+} from './generated/index.js'
+import { DeviceType } from './integrations/deviceType.js'
+import { HTTPServer } from './integrations/http/index.js'
+import { MIDIDevice } from './integrations/midi/index.js'
+import { OSCServer } from './integrations/osc/index.js'
+import { SkaarhojDevice } from './integrations/skaarhoj/index.js'
+import { StreamDeckDevice } from './integrations/streamdeck/index.js'
+import { XKeysDevice } from './integrations/xkeys/index.js'
+import { throwNever } from './lib.js'
+import { Logger } from './logger.js'
 
 interface Config {
 	devices: Record<string, SomeDeviceConfig>
@@ -64,7 +66,10 @@ class InputManager extends EventEmitter<DeviceEvents> {
 	#refreshInterval: NodeJS.Timeout | undefined
 	#feedback: Record<string, Record<string, SomeFeedback>> = {}
 
-	constructor(private config: Config, logger: Logger) {
+	constructor(
+		private config: Config,
+		logger: Logger
+	) {
 		super()
 		this.#logger = logger
 	}
@@ -230,16 +235,18 @@ class InputManager extends EventEmitter<DeviceEvents> {
 
 		return async () => {
 			// set null feedback on all triggers that are not in the new feedback cache
-			const p = Object.entries<Record<string, SomeFeedback>>(oldFeedback).map(async ([deviceId, deviceTriggersObj]) => {
-				await Promise.all(
-					Object.entries<SomeFeedback>(deviceTriggersObj).map(async ([triggerId, feedback]) => {
-						if (this.#feedback[deviceId]?.[triggerId] === undefined && feedback !== undefined) {
-							this.#logger.debug(`Clearing ${deviceId} "${triggerId}" as no longer used...`)
-							await this.setFeedback(deviceId, triggerId, null)
-						}
-					})
-				)
-			})
+			const p = Object.entries<Record<string, SomeFeedback>>(oldFeedback).map(
+				async ([deviceId, deviceTriggersObj]) => {
+					await Promise.all(
+						Object.entries<SomeFeedback>(deviceTriggersObj).map(async ([triggerId, feedback]) => {
+							if (this.#feedback[deviceId]?.[triggerId] === undefined && feedback !== undefined) {
+								this.#logger.debug(`Clearing ${deviceId} "${triggerId}" as no longer used...`)
+								await this.setFeedback(deviceId, triggerId, null)
+							}
+						})
+					)
+				}
+			)
 			await Promise.allSettled(p)
 		}
 	}

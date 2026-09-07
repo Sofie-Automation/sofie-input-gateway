@@ -1,17 +1,19 @@
-import net from 'net'
-import { Logger } from '../../logger'
-import { Device } from '../../devices/device'
-import { FeedbackStore } from '../../devices/feedbackStore'
-import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib'
-import { ClassNames, Label, SomeFeedback, Tally } from '../../feedback/feedback'
-import { SkaarhojPanelOptions } from '../../generated'
+import * as net from 'net'
+
+import * as ASCIIFolder from 'fold-to-ascii'
+
 import { sleep } from '@sofie-automation/shared-lib/dist/lib/lib'
-import ASCIIFolder from 'fold-to-ascii'
+
+import { Device } from '../../devices/device.js'
+import { FeedbackStore } from '../../devices/feedbackStore.js'
+import { ClassNames, Label, SomeFeedback, Tally } from '../../feedback/feedback.js'
+import { SkaarhojPanelOptions } from '../../generated/index.js'
+import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib.js'
+import { Logger } from '../../logger.js'
+import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 const SEND_TIMEOUT = 1000
 const CONNECTION_TIMEOUT = 5000
-
-import DEVICE_OPTIONS from './$schemas/options.json'
 
 export class SkaarhojDevice extends Device {
 	private socket: net.Socket | undefined
@@ -49,7 +51,7 @@ export class SkaarhojDevice extends Device {
 			)
 			socket.setEncoding('utf-8')
 			socket.on('data', this.onData)
-			socket.on('error', (err) => {
+			socket.on('error', (err: Error) => {
 				if (!isOpen) reject(err)
 				this.emit('error', {
 					error: err,
@@ -70,8 +72,8 @@ export class SkaarhojDevice extends Device {
 
 	private onData = (data: string) => {
 		// TODO: Respond to BSY, RDY & flow control in sendToDevice()
-		let match: RegExpMatchArray | null = null
-		if ((match = data.match(InboundMessages.Trigger)) === null) {
+		const match: RegExpMatchArray | null = data.match(InboundMessages.Trigger)
+		if (match === null) {
 			this.logger.debug(`Uknown message from device: ${data}`)
 			return
 		}
@@ -181,7 +183,8 @@ export class SkaarhojDevice extends Device {
 		}
 
 		let title = SkaarhojDevice.getShortishLabel(feedback.contentClass, true)
-		let line1 = feedback.userLabel?.long ?? feedback.content?.long ?? SkaarhojDevice.getShortishLabel(feedback.action)
+		let line1 =
+			feedback.userLabel?.long ?? feedback.content?.long ?? SkaarhojDevice.getShortishLabel(feedback.action)
 		let line2 = ''
 
 		if (line1 !== undefined && line1.length > 10) {
@@ -229,8 +232,8 @@ export class SkaarhojDevice extends Device {
 				reject(new Error('Socket not connected'))
 				return
 			}
-			const timeout = setTimeout(() => reject('Send timeout'), SEND_TIMEOUT)
-			socket.write(`${buf}\n`, (err) => {
+			const timeout = setTimeout(() => reject(new Error('Send timeout')), SEND_TIMEOUT)
+			socket.write(`${buf}\n`, (err?: Error | null) => {
 				clearTimeout(timeout)
 				if (err) {
 					reject(err)

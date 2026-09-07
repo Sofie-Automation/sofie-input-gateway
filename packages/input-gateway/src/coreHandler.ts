@@ -1,31 +1,35 @@
+import * as fs from 'fs'
+import { fileURLToPath } from 'node:url'
+import * as path from 'path'
+
+import { isEqual } from 'underscore'
+import * as Winston from 'winston'
+
 import {
 	CoreConnection,
 	CoreOptions,
 	DDPConnectorOptions,
-	PeripheralDevicePubSub,
-	PeripheralDevicePubSubCollectionsNames,
-	StatusCode,
-	PeripheralDeviceId,
-	PeripheralDeviceAPI,
-	protectString,
-	unprotectString,
-	stringifyError,
-	PeripheralDeviceCommand,
 	ICoreHandler,
 	KubernetesRestarter,
+	PeripheralDeviceAPI,
+	PeripheralDeviceCommand,
+	PeripheralDeviceId,
+	PeripheralDevicePubSub,
+	PeripheralDevicePubSubCollectionsNames,
+	protectString,
+	StatusCode,
+	stringifyError,
+	unprotectString,
 } from '@sofie-automation/server-core-integration'
 import { PeripheralDeviceCommandId } from '@sofie-automation/shared-lib/dist/core/model/Ids'
 import {
 	DeviceStatusDetail,
 	PeripheralDeviceStatusObject,
 } from '@sofie-automation/shared-lib/dist/peripheralDevice/peripheralDeviceAPI'
-import _ from 'underscore'
-import * as Winston from 'winston'
-import { DeviceConfig } from './inputManagerHandler'
-import fs from 'fs'
-import { INPUT_DEVICE_CONFIG } from './configManifest'
-import { Process } from './process'
-import path from 'path'
+
+import { INPUT_DEVICE_CONFIG } from './configManifest.js'
+import { Process } from './process.js'
+import type { DeviceConfig } from './inputManagerHandler.js'
 
 export interface CoreConfig {
 	host: string
@@ -62,10 +66,7 @@ export class CoreHandler implements ICoreHandler {
 	private _k8sRestarter?: KubernetesRestarter
 
 	private _processState: {
-		[key: string]: {
-			comments: string[]
-			status: StatusCode
-		}
+		[key: string]: ProcessState
 	}
 
 	constructor(logger: Winston.Logger, deviceOptions: DeviceConfig) {
@@ -194,7 +195,7 @@ export class CoreHandler implements ICoreHandler {
 
 			const device = col.findOne(id)
 			if (device) {
-				if (!_.isEqual(this.deviceSettings, device.deviceSettings)) {
+				if (!isEqual(this.deviceSettings, device.deviceSettings)) {
 					this.deviceSettings = device.deviceSettings || {}
 				}
 			} else {
@@ -271,7 +272,9 @@ export class CoreHandler implements ICoreHandler {
 		const observer = functionObject.core.observe(PeripheralDevicePubSubCollectionsNames.peripheralDeviceCommands)
 		functionObject._observers.push(observer)
 		const addedChangedCommand = (id: PeripheralDeviceCommandId) => {
-			const cmds = functionObject.core.getCollection(PeripheralDevicePubSubCollectionsNames.peripheralDeviceCommands)
+			const cmds = functionObject.core.getCollection(
+				PeripheralDevicePubSubCollectionsNames.peripheralDeviceCommands
+			)
 			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
 			const cmd = cmds.findOne(id)
 			if (!cmd) throw Error('PeripheralCommand "' + id + '" not found!')
@@ -302,7 +305,7 @@ export class CoreHandler implements ICoreHandler {
 		} else {
 			this.logger.info('killing process in 1000ms!')
 			setTimeout(() => {
-				// eslint-disable-next-line no-process-exit
+				// eslint-disable-next-line n/no-process-exit
 				process.exit(0)
 			}, 1000)
 			return true
@@ -335,9 +338,9 @@ export class CoreHandler implements ICoreHandler {
 		if (this.deviceStatus !== StatusCode.GOOD) {
 			statusCode = this.deviceStatus
 			if (this.deviceMessages) {
-				_.each(this.deviceMessages, (msg) => {
+				for (const msg of this.deviceMessages) {
 					statusDetails.push({ message: msg })
-				})
+				}
 			}
 		}
 		if (!this._statusInitialized) {
@@ -362,8 +365,7 @@ export class CoreHandler implements ICoreHandler {
 			status,
 		}
 
-		const deviceState = _.reduce(
-			this._processState,
+		const deviceState = Object.values<ProcessState>(this._processState).reduce(
 			(memo, value) => {
 				let status = memo.status
 				let comments = memo.comments
@@ -394,7 +396,7 @@ export class CoreHandler implements ICoreHandler {
 	private _getVersions() {
 		const versions: { [packageName: string]: string } = {}
 
-		const entrypointDir = path.dirname((require as any).main.filename)
+		const entrypointDir = path.dirname(fileURLToPath(import.meta.url))
 
 		if (process.env.npm_package_version) {
 			versions['_process'] = process.env.npm_package_version
@@ -445,4 +447,9 @@ export class CoreHandler implements ICoreHandler {
 			statusDetails,
 		}
 	}
+}
+
+type ProcessState = {
+	comments: string[]
+	status: StatusCode
 }

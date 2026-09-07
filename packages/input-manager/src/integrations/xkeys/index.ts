@@ -1,11 +1,11 @@
 import { listAllConnectedPanels, setupXkeysPanel, XKeys } from 'xkeys'
-import { Logger } from '../../logger'
-import { Device } from '../../devices/device'
-import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib'
-import { ClassNames, SomeFeedback, Tally } from '../../feedback/feedback'
-import { XKeysDeviceOptions } from '../../generated'
 
-import DEVICE_OPTIONS from './$schemas/options.json'
+import { Device } from '../../devices/device.js'
+import { ClassNames, SomeFeedback, Tally } from '../../feedback/feedback.js'
+import { XKeysDeviceOptions } from '../../generated/index.js'
+import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib.js'
+import { Logger } from '../../logger.js'
+import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 enum Colors {
 	RED = '#ff0000',
@@ -95,41 +95,50 @@ export class XKeysDevice extends Device {
 		this.device.on('jog', (index, deltaValue) => {
 			const triggerId = `${index} ${Symbols.JOG}`
 
-			this.updateTriggerAnalog({ triggerId, rateLimit: DEFAULT_ANALOG_RATE_LIMIT }, (prev?: { deltaValue: number }) => {
-				if (!prev) prev = { deltaValue: 0 }
+			this.updateTriggerAnalog(
+				{ triggerId, rateLimit: DEFAULT_ANALOG_RATE_LIMIT },
+				(prev?: { deltaValue: number }) => {
+					if (!prev) prev = { deltaValue: 0 }
 
-				let direction = 0
-				if (deltaValue < 0) direction = -1
-				if (deltaValue > 0) direction = 1
+					let direction = 0
+					if (deltaValue < 0) direction = -1
+					if (deltaValue > 0) direction = 1
 
-				return {
-					deltaValue: prev.deltaValue + deltaValue,
-					direction,
+					return {
+						deltaValue: prev.deltaValue + deltaValue,
+						direction,
+					}
 				}
-			})
+			)
 		})
 
 		this.device.on('shuttle', (index, position) => {
 			const triggerId = `${index} ${Symbols.SHUTTLE}`
 
-			this.updateTriggerAnalog({ triggerId, rateLimit: DEFAULT_ANALOG_RATE_LIMIT }, (prev?: { position: number }) => {
-				if (!prev) prev = { position: 0 }
+			this.updateTriggerAnalog(
+				{ triggerId, rateLimit: DEFAULT_ANALOG_RATE_LIMIT },
+				(prev?: { position: number }) => {
+					if (!prev) prev = { position: 0 }
 
-				return {
-					position: prev.position + position,
+					return {
+						position: prev.position + position,
+					}
 				}
-			})
+			)
 		})
 
 		this.device.on('tbar', (index, position) => {
 			const triggerId = `${index} ${Symbols.T_BAR}`
 
-			this.updateTriggerAnalog({ triggerId, rateLimit: DEFAULT_ANALOG_RATE_LIMIT }, (prev?: { position: number }) => {
-				if (!prev) prev = { position: 0 }
-				return {
-					position: prev.position + position,
+			this.updateTriggerAnalog(
+				{ triggerId, rateLimit: DEFAULT_ANALOG_RATE_LIMIT },
+				(prev?: { position: number }) => {
+					if (!prev) prev = { position: 0 }
+					return {
+						position: prev.position + position,
+					}
 				}
-			})
+			)
 		})
 
 		this.device.on('joystick', (index, positions) => {
@@ -168,7 +177,7 @@ export class XKeysDevice extends Device {
 	}
 
 	private static parseTriggerId(triggerId: string): { keyIndex: number; isButton: boolean; isUp: boolean } {
-		const triggerElements = triggerId.split(/\s+/)
+		const triggerElements = triggerId.split(/\s+/) as Symbols[]
 		const keyIndex = Number.parseInt(triggerElements[0] ?? '0')
 		const isButton = triggerElements[1] === Symbols.UP || triggerElements[1] === Symbols.DOWN
 		const isUp = triggerElements[1] === Symbols.UP
@@ -177,8 +186,8 @@ export class XKeysDevice extends Device {
 
 	private static selectKeyBacklight(tally: Tally | undefined, classNames: string[] | undefined): string | null {
 		if (classNames === undefined) return null
-		if (tally !== undefined && (tally & Tally.ACTIVE) === Tally.ACTIVE) return Colors.RED
-		if (tally !== undefined && (tally & Tally.NEXT) === Tally.ACTIVE) return Colors.GREEN
+		if (tally !== undefined && (tally & Number(Tally.ACTIVE)) === Number(Tally.ACTIVE)) return Colors.RED
+		if (tally !== undefined && (tally & Number(Tally.NEXT)) === Number(Tally.ACTIVE)) return Colors.GREEN
 		if (classNames.includes(ClassNames.AD_LIB)) return Colors.ORANGE
 		return null
 	}

@@ -1,5 +1,6 @@
 import { CanvasRenderingContext2D, CanvasTextAlign } from 'skia-canvas'
-import { createFill } from './fill'
+
+import { createFill } from './fill.js'
 
 enum TRBLPositions {
 	TOP = 0,
@@ -31,14 +32,10 @@ export class TextContext {
 	private static populateTRBL(numbers: number[]): TopRightBottomLeft {
 		const [number0, number1, number2, number3] = numbers
 
-		let right,
-			bottom,
-			left = 0
-
 		const top = number0
-		right = number0
-		left = number0
-		bottom = number0
+		let right = number0
+		let left = number0
+		let bottom = number0
 		if (number1 !== undefined) {
 			left = number1
 			right = number1
@@ -141,12 +138,11 @@ export class TextContext {
 
 		const metrics = ctx.measureText(nonNullishChildren, maxWidth)
 
-		let linesCount = metrics.lines.length
 		let clampedLines = metrics.lines
 
 		if (lineClamp !== undefined) {
 			if (metrics.lines.length > lineClamp) {
-				linesCount = lineClamp
+				const linesCount = lineClamp
 				clampedLines = metrics.lines.slice(0, linesCount)
 				const endOfLastLine = clampedLines[clampedLines.length - 1].endIndex
 				nonNullishChildren = nonNullishChildren.substring(0, endOfLastLine)
@@ -171,7 +167,11 @@ export class TextContext {
 					y +
 					Math.max(
 						0,
-						(this.height - y - this.#padding[TRBLPositions.BOTTOM] - this.#margin[TRBLPositions.BOTTOM] - textHeight) /
+						(this.height -
+							y -
+							this.#padding[TRBLPositions.BOTTOM] -
+							this.#margin[TRBLPositions.BOTTOM] -
+							textHeight) /
 							2
 					)
 			} else if (vAlign === 'bottom') {
@@ -207,7 +207,14 @@ export class TextContext {
 			const [top, right, bottom, left] = inlineBackgroundPadding
 				? TextContext.populateTRBL(inlineBackgroundPadding.split(' ').map(Number))
 				: [0, 0, 0, 0]
-			ctx.fillStyle = createFill(ctx, inlineBackground, x - left, y - top, textHeight + bottom, metrics.width + right)
+			ctx.fillStyle = createFill(
+				ctx,
+				inlineBackground,
+				x - left,
+				y - top,
+				textHeight + bottom,
+				metrics.width + right
+			)
 			clampedLines.forEach((line) => {
 				ctx.fillRect(x + line.x - left, y + line.y - top, line.width + right + left, line.height + top + bottom)
 			})

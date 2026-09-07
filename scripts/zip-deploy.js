@@ -1,5 +1,5 @@
 const zipAFolder = require('zip-a-folder')
-const process = require('process')
+// const process = require('process') // process is a global variable in node.js
 const fs = require('fs/promises')
 
 const packageName = 'input-gateway'
@@ -21,5 +21,6 @@ const suffix = process.argv[2] ?? ''
 	await fs.rename(`./${zipFileName}`, `./deploy/${zipFileName}`)
 })().catch((err) => {
 	console.error(err)
+	// eslint-disable-next-line n/no-process-exit
 	process.exit(1)
 })

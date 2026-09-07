@@ -1,5 +1,5 @@
 {
-	"extends": "@sofie-automation/code-standard-preset/ts/tsconfig.lib",
+	"extends": "@sofie-automation/code-standard-preset/ts/tsconfig.bin",
 	"include": [
 		"src/**/*.ts"
 	],
@@ -14,10 +14,6 @@
 		"rootDir": "./src",
 		"types": [
 			"node"
-		],
-		// "module": "es2022",
-		// "target": "ES2022",
-		"resolveJsonModule": true,
-		"skipLibCheck": true
+		]
 	}
 }

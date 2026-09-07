@@ -40,8 +40,6 @@ npm run start
 - yarn
   https://yarnpkg.com
 
-- jest
-  yarn global add jest
 
 ---
 

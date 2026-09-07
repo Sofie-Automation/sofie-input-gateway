@@ -1,11 +1,13 @@
-import { Canvas, FontLibrary } from 'skia-canvas'
-import { SomeBitmapFeedback } from '../feedback'
-import { rendererFactory } from './typeRenderers/factory'
-import path from 'path'
-import fs from 'fs/promises'
 import { constants as fsConstants } from 'fs'
-import process from 'process'
-import { Logger } from '../../logger'
+import * as fs from 'fs/promises'
+import * as path from 'path'
+import * as process from 'process'
+
+import { Canvas, FontLibrary } from 'skia-canvas'
+
+import { Logger } from '../../logger.js'
+import { SomeBitmapFeedback } from '../feedback.js'
+import { rendererFactory } from './typeRenderers/factory.js'
 
 async function makeBitmapFromFeedback(
 	feedback: SomeBitmapFeedback,
@@ -49,7 +51,7 @@ export async function getBitmap(
 
 export async function init(logger: Logger): Promise<void> {
 	// Create a canvas, just to boot up Skia, load the fonts, etc.
-	const { canvas, ctx } = createCanvasAndContext()
+	const { canvas } = createCanvasAndContext()
 	logger.silly(
 		`skia-canvas initialized, using GPU: ${canvas.gpu}, engine info: ${JSON.stringify((canvas as any).engine)}`
 	)
@@ -67,8 +69,6 @@ export async function init(logger: Logger): Promise<void> {
 
 	FontLibrary.use('RobotoCnd', foundFiles)
 	logger.silly('Fonts loaded into FontLibrary')
-
-	void canvas, ctx
 }
 
 async function findFiles(files: string[], paths: string[]): Promise<string[]> {
@@ -81,7 +81,7 @@ async function findFiles(files: string[], paths: string[]): Promise<string[]> {
 				// File exists, we can add it to result
 				result.push(pathToTest)
 				break
-			} catch (e) {
+			} catch {
 				// Doesn't exist or can't read
 			}
 		}

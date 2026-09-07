@@ -1,8 +1,9 @@
 import { CanvasRenderingContext2D } from 'skia-canvas'
-import { BitmapFeedback, ClassNames } from '../../feedback'
-import { ActionRenderer } from './action'
-import { BaseAdLibRenderer } from './adlib/base'
-import { BaseRenderer } from './base'
+
+import { BitmapFeedback, ClassNames } from '../../feedback.js'
+import { ActionRenderer } from './action.js'
+import { BaseAdLibRenderer } from './adlib/base.js'
+import { BaseRenderer } from './base.js'
 
 export function rendererFactory(
 	feedback: BitmapFeedback,

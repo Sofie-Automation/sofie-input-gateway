@@ -1,12 +1,13 @@
 import { listStreamDecks, openStreamDeck } from '@elgato-stream-deck/node'
-import { Logger } from '../../logger'
-import { Device } from '../../devices/device'
-import { SomeFeedback } from '../../feedback/feedback'
-import { StreamDeckDeviceOptions } from '../../generated'
-import { StreamDeckDeviceHandler } from './device'
-import DEVICE_OPTIONS from './$schemas/options.json'
-import { StreamDeckTcpProxy } from './tcp-proxy'
-import { StreamDeckDeviceBase } from './types'
+
+import { Device } from '../../devices/device.js'
+import { SomeFeedback } from '../../feedback/feedback.js'
+import { StreamDeckDeviceOptions } from '../../generated/index.js'
+import { Logger } from '../../logger.js'
+import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
+import { StreamDeckDeviceHandler } from './device.js'
+import { StreamDeckTcpProxy } from './tcp-proxy.js'
+import { StreamDeckDeviceBase } from './types.js'
 
 export class StreamDeckDevice extends Device {
 	private config: StreamDeckDeviceOptions

@@ -49,6 +49,7 @@ declare module 'osc' {
 		args: Argument | Array<Argument> | MetaArgument | Array<MetaArgument>
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	export interface OscBundle {}
 
 	export interface SenderInfo {

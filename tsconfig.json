@@ -1,7 +1,11 @@
 {
-	"files": [],
-	"references": [
-		{ "path": "packages/input-gateway" },
-		{ "path": "packages/input-manager" }
-	]
+	"extends": "./tsconfig.build.json",
+	"exclude": [
+		"node_modules/**"
+	],
+	"compilerOptions": {
+		"types": [
+			"node"
+		]
+	}
 }

@@ -1,5 +1,5 @@
-import { ClassNames, BitmapFeedback, Tally } from '../../../feedback'
-import { BaseRenderer } from '../base'
+import { BitmapFeedback, ClassNames, Tally } from '../../../feedback.js'
+import { BaseRenderer } from '../base.js'
 
 /**
 
@@ -63,7 +63,8 @@ const TALLY_COLORS: Record<string, string> = {
 export class BaseAdLibRenderer extends BaseRenderer {
 	private getAdLibColor(classNames: string[] | undefined): string {
 		if (classNames === undefined) return COLORS[ClassNames.UNKNOWN]
-		const className = classNames.find((className) => Object.keys(COLORS).includes(className)) as ClassNames | undefined
+		const className = classNames.find((className) => Object.keys(COLORS).includes(className)) as
+			ClassNames | undefined
 		if (className) return COLORS[className]
 		return COLORS[ClassNames.UNKNOWN]
 	}

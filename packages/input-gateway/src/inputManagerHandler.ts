@@ -1,9 +1,29 @@
-import _ from 'underscore'
+import PQueue from '@esm2cjs/p-queue'
+import { isEqual } from 'underscore'
 import * as Winston from 'winston'
-import { StatusCode } from '@sofie-automation/shared-lib/dist/lib/status'
-import { CoreHandler } from './coreHandler'
-import { Complete, DeviceSettings } from './interfaces'
+
+import {
+	ClassNames,
+	Feedback,
+	InputManager,
+	ManagerTriggerEventArgs,
+	SomeDeviceConfig,
+	SomeFeedback,
+	Tally,
+	TriggerEvent,
+} from '@sofie-automation/input-manager'
+import {
+	HealthEndpoints,
+	IConnector,
+	Observer,
+	PeripheralDevicePubSub,
+	PeripheralDevicePubSubCollectionsNames,
+	stringifyError,
+	SubscriptionId,
+	// HealthEndpoints,
+} from '@sofie-automation/server-core-integration'
 import { PeripheralDeviceId } from '@sofie-automation/shared-lib/dist/core/model/Ids'
+import { PlayoutActions, SourceLayerType } from '@sofie-automation/shared-lib/dist/core/model/ShowStyle'
 import {
 	DeviceActionArguments,
 	DeviceTriggerMountedAction,
@@ -11,34 +31,18 @@ import {
 	PreviewWrappedAdLib,
 	ShiftRegisterActionArguments,
 } from '@sofie-automation/shared-lib/dist/input-gateway/deviceTriggerPreviews'
-import { SourceLayerType } from '@sofie-automation/shared-lib/dist/core/model/ShowStyle'
-import { Process } from './process'
-import { Config } from './connector'
-import {
-	InputManager,
-	ClassNames,
-	ManagerTriggerEventArgs,
-	Tally,
-	SomeFeedback,
-	SomeDeviceConfig,
-	TriggerEvent,
-	Feedback,
-} from '@sofie-automation/input-manager'
-import { interpollateTranslation, translateMessage } from './lib/translatableMessage'
-import { ITranslatableMessage } from '@sofie-automation/shared-lib/dist/lib/translations'
-import {
-	Observer,
-	SubscriptionId,
-	PeripheralDevicePubSub,
-	PeripheralDevicePubSubCollectionsNames,
-	HealthEndpoints,
-	IConnector,
-	stringifyError,
-	// HealthEndpoints,
-} from '@sofie-automation/server-core-integration'
 import { literal, sleep } from '@sofie-automation/shared-lib/dist/lib/lib'
-import PQueue from '@esm2cjs/p-queue'
-import { InputGatewaySettings } from './generated/options'
+import { StatusCode } from '@sofie-automation/shared-lib/dist/lib/status'
+import { ITranslatableMessage } from '@sofie-automation/shared-lib/dist/lib/translations'
+
+import { Config } from './connector.js'
+import { CoreHandler } from './coreHandler.js'
+import { Complete, DeviceSettings } from './interfaces.js'
+import { interpollateTranslation, translateMessage } from './lib/translatableMessage.js'
+import { Process } from './process.js'
+// @ts-expect-error file ending
+// eslint-disable-next-line n/file-extension-in-import
+import type { InputGatewaySettings } from './generated/options'
 
 export type SetProcessState = (processName: string, comments: string[], status: StatusCode) => void
 
@@ -109,7 +113,7 @@ export class InputManagerHandler implements IConnector {
 				this.#logger.warn('Not setup yet, exiting process!')
 				this.#logger.warn('To setup, go into Core and add this device to a Studio')
 				this.#logger.warn('------------------------------------------------------')
-				// eslint-disable-next-line no-process-exit
+				// eslint-disable-next-line n/no-process-exit
 				process.exit(1)
 				return
 			}
@@ -136,7 +140,7 @@ export class InputManagerHandler implements IConnector {
 
 			this.#logger.info('Shutting down in 10 seconds!')
 			setTimeout(() => {
-				// eslint-disable-next-line no-process-exit
+				// eslint-disable-next-line n/no-process-exit
 				process.exit(0)
 			}, 10 * 1000)
 			return
@@ -170,7 +174,9 @@ export class InputManagerHandler implements IConnector {
 			// Force purge the collections, as server-core-integration will repopulate them once the subscription are re-established,
 			// but any data that was in the collections before the reconnection will remain and be out of sync.
 			if (this.#coreHandler.core.ddp.ddpClient) {
-				this.#coreHandler.core.ddp.ddpClient.collections[PeripheralDevicePubSubCollectionsNames.mountedTriggers] = {}
+				this.#coreHandler.core.ddp.ddpClient.collections[
+					PeripheralDevicePubSubCollectionsNames.mountedTriggers
+				] = {}
 				this.#coreHandler.core.ddp.ddpClient.collections[
 					PeripheralDevicePubSubCollectionsNames.mountedTriggersPreviews
 				] = {}
@@ -180,7 +186,9 @@ export class InputManagerHandler implements IConnector {
 				.then(async () => {
 					await this.#refreshMountedTriggers()
 				})
-				.catch((err) => this.#logger.error(`Error in refreshMountedTriggers() on coreHandler.onConnected: ${err}`))
+				.catch((err) =>
+					this.#logger.error(`Error in refreshMountedTriggers() on coreHandler.onConnected: ${err}`)
+				)
 		})
 
 		const mountedTriggersObserver = this.#coreHandler.core.observe(
@@ -213,7 +221,9 @@ export class InputManagerHandler implements IConnector {
 				)
 					.then(async () => this.#handleChangedMountedTrigger(id))
 					.catch((err) => {
-						this.#logger.error(`Error in handleRemovedMountedTrigger() on mountedTriggersObserver.changed: ${err}`)
+						this.#logger.error(
+							`Error in handleRemovedMountedTrigger() on mountedTriggersObserver.changed: ${err}`
+						)
 					})
 				return
 			}
@@ -243,7 +253,9 @@ export class InputManagerHandler implements IConnector {
 			}
 			for (const action of mountedActions) {
 				this.#handleChangedMountedTrigger(action._id).catch((err) => {
-					this.#logger.error(`Error in handleChangedMountedTrigger() on triggersPreviewsObserver.added: ${err}`)
+					this.#logger.error(
+						`Error in handleChangedMountedTrigger() on triggersPreviewsObserver.added: ${err}`
+					)
 				})
 			}
 		}
@@ -266,7 +278,9 @@ export class InputManagerHandler implements IConnector {
 			}
 			for (const action of mountedActions) {
 				this.#handleChangedMountedTrigger(action._id).catch((err) => {
-					this.#logger.error(`Error in handleChangedMountedTrigger() on triggersPreviewsObserver.changed: ${err}`)
+					this.#logger.error(
+						`Error in handleChangedMountedTrigger() on triggersPreviewsObserver.changed: ${err}`
+					)
 				})
 			}
 		}
@@ -283,7 +297,9 @@ export class InputManagerHandler implements IConnector {
 			}
 			for (const action of mountedActions) {
 				this.#handleChangedMountedTrigger(action._id).catch((err) => {
-					this.#logger.error(`Error in handleChangedMountedTrigger() on triggersPreviewsObserver.removed: ${err}`)
+					this.#logger.error(
+						`Error in handleChangedMountedTrigger() on triggersPreviewsObserver.removed: ${err}`
+					)
 				})
 			}
 		}
@@ -306,7 +322,7 @@ export class InputManagerHandler implements IConnector {
 			.getPeripheralDevice()
 			.then(async (device) => {
 				if (!device) return
-				if (_.isEqual(device.inputDevices, this.#deviceSettings)) return
+				if (isEqual(device.inputDevices, this.#deviceSettings)) return
 
 				const settings: DeviceSettings = device.inputDevices as DeviceSettings
 				const gatewaySettings: InputGatewaySettings = device.deviceSettings as InputGatewaySettings
@@ -427,7 +443,8 @@ export class InputManagerHandler implements IConnector {
 	}
 
 	#executeDeviceAction(deviceId: string, trigger: TriggerEvent): void {
-		const deviceAction: DeviceActionArguments | undefined = this.#deviceTriggerActions[deviceId]?.[trigger.triggerId]
+		const deviceAction: DeviceActionArguments | undefined =
+			this.#deviceTriggerActions[deviceId]?.[trigger.triggerId]
 		if (!deviceAction) return
 
 		this.#logger.debug(`Executing Device Action: ${deviceAction.type}: ${JSON.stringify(deviceAction)}`)
@@ -439,7 +456,9 @@ export class InputManagerHandler implements IConnector {
 		const registerIndex = Number(action.register)
 
 		if (registerIndex < 0 || !Number.isInteger(registerIndex)) {
-			this.#logger.error(`Register index needs to be a non-negative integer: received "${action.register}" in action"`)
+			this.#logger.error(
+				`Register index needs to be a non-negative integer: received "${action.register}" in action"`
+			)
 			return
 		}
 
@@ -601,7 +620,7 @@ export class InputManagerHandler implements IConnector {
 		contentTypes: SourceLayerType[] | undefined
 	): string[] {
 		const classNames: string[] = []
-		if (mountedTrigger.actionType === 'adlib') {
+		if (mountedTrigger.actionType === PlayoutActions.adlib) {
 			classNames.push(ClassNames.AD_LIB)
 		}
 
@@ -653,12 +672,16 @@ export class InputManagerHandler implements IConnector {
 					Tally.PRESENT |
 					previewedAdlibs.reduce(
 						(acc, adlib) =>
-							acc | (adlib.isActive ? Tally.ACTIVE : Tally.NONE) | (adlib.isNext ? Tally.NEXT : Tally.NONE),
+							acc |
+							(adlib.isActive ? Tally.ACTIVE : Tally.NONE) |
+							(adlib.isNext ? Tally.NEXT : Tally.NONE),
 						Tally.NONE
 					)
 				contentLayerLongName = previewedAdlibs[0].sourceLayerName?.name
 				contentLayerShortName = previewedAdlibs[0].sourceLayerName?.abbreviation
-				contentLabel = previewedAdlibs.map((adlib) => InputManagerHandler.getStringLabel(adlib.label)).join(', ')
+				contentLabel = previewedAdlibs
+					.map((adlib) => InputManagerHandler.getStringLabel(adlib.label))
+					.join(', ')
 				contentTypes = previewedAdlibs.map((adlib) => adlib.sourceLayerType).filter((a) => a !== undefined)
 				styleClassNames = previewedAdlibs[0].styleClassNames
 			}
@@ -673,7 +696,9 @@ export class InputManagerHandler implements IConnector {
 		return literal<Complete<Feedback>>({
 			userLabel: userLabel ? { long: userLabel } : undefined,
 			action: mountedTrigger ? { long: actionName } : undefined,
-			contentClass: contentLayerLongName ? { long: contentLayerLongName, short: contentLayerShortName } : undefined,
+			contentClass: contentLayerLongName
+				? { long: contentLayerLongName, short: contentLayerShortName }
+				: undefined,
 			content: contentLabel ? { long: contentLabel } : undefined,
 			classNames: InputManagerHandler.buildFeedbackClassNames(mountedTrigger, contentTypes),
 			tally,

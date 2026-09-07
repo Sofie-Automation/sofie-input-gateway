@@ -1,5 +1,5 @@
-import { BitmapFeedback } from '../../feedback'
-import { BaseRenderer } from './base'
+import { BitmapFeedback } from '../../feedback.js'
+import { BaseRenderer } from './base.js'
 
 export class ActionRenderer extends BaseRenderer {
 	render(feedback: BitmapFeedback): void {
