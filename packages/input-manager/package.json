@@ -97,6 +97,7 @@
 		"lru-cache": "11.0.2",
 		"osc": "^2.4.4",
 		"skia-canvas": "2.0.2",
+		"typescript": "~6.0.0",
 		"xkeys": "^3.1.1"
 	},
 	"peerDependencies": {
@@ -107,7 +108,6 @@
 	},
 	"devDependencies": {
 		"@prettier/plugin-oxc": "^0.2.2",
-		"@sofie-automation/code-standard-preset": "*",
 		"@types/fold-to-ascii": "^5.0.2",
 		"eslint": "*",
 		"prettier": "*",

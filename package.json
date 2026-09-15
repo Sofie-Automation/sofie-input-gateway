@@ -15,7 +15,7 @@
   "scripts": {
     "prepare": "husky install",
     "precommit": "lint-staged",
-    "build": "run generate-schema-types && yarn workspaces foreach --all -t run build",
+    "build": "run generate-schema-types && yarn format-schema-types && yarn workspaces foreach --all -t run build",
     "build:main": "yarn workspace input-gateway run build",
     "build:manager": "yarn workspace @sofie-automation/input-manager run build",
     "lint:eslint": "eslint .",
@@ -47,10 +47,11 @@
     "zip-deploy": "node scripts/zip-deploy.mjs",
     "release": "sofie-version",
     "generate-schema-types": "yarn workspaces foreach --all run generate-schema-types",
+    "format-schema-types": "prettier ./packages/*/src/generated/** --write",
     "g:eslint": "cd $INIT_CWD && \"$PROJECT_CWD/node_modules/.bin/eslint\""
   },
   "devDependencies": {
-    "@sofie-automation/code-standard-preset": "4.0.2-nightly-fix-update-deps-20260901-090646-62be0e6",
+    "@sofie-automation/code-standard-preset": "^4.0.3",
     "@types/node": "^22.15.21",
     "@types/sprintf-js": "^1.1.4",
     "@types/underscore": "^1.11.15",
