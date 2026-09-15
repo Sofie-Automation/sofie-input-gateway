@@ -1,11 +1,7 @@
 {
 	"extends": "./tsconfig.build.json",
-	"exclude": [
-		"node_modules/**"
-	],
+	"exclude": ["node_modules/**"],
 	"compilerOptions": {
-		"types": [
-			"node"
-		]
+		"types": ["node"]
 	}
 }

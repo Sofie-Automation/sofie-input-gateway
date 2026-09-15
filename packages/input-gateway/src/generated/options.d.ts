@@ -6,6 +6,6 @@
  */
 
 export interface InputGatewaySettings {
-  logLevel?: "error" | "warn" | "info" | "verbose" | "debug" | "silly";
-  [k: string]: unknown;
+	logLevel?: 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly'
+	[k: string]: unknown
 }

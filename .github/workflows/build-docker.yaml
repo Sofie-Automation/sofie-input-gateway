@@ -136,4 +136,4 @@ jobs:
           push: true
           provenance: false
           labels: ${{ steps.dockerhub-tag.outputs.labels }}
-          tags: "${{ steps.dockerhub-tag.outputs.tags }}"
+          tags: '${{ steps.dockerhub-tag.outputs.tags }}'

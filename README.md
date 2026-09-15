@@ -40,7 +40,6 @@ npm run start
 - yarn
   https://yarnpkg.com
 
-
 ---
 
 _The NRK logo is a registered trademark of Norsk rikskringkasting AS. The license does not grant any right to use, in any way, any trademarks, service marks or logos of Norsk rikskringkasting AS._
