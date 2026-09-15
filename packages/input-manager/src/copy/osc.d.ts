@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
 // Copied from https://github.com/colinbdclark/osc.js/pull/105
 
 declare module 'osc' {
@@ -49,6 +48,7 @@ declare module 'osc' {
 		args: Argument | Array<Argument> | MetaArgument | Array<MetaArgument>
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	export interface OscBundle {}
 
 	export interface SenderInfo {

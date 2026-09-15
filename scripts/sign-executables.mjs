@@ -1,8 +1,10 @@
+/* eslint-disable n/no-process-exit */
 // @ts-check
-import { glob } from 'glob'
 import { exec } from 'child_process'
 import readline from 'readline'
 import { promisify } from 'util'
+
+import { glob } from 'glob'
 
 const execPromise = promisify(exec)
 
@@ -23,7 +25,7 @@ try {
 	try {
 		await execPromise('where signtool')
 		signtoolInstalled = true
-	} catch (e) {
+	} catch {
 		signtoolInstalled = false
 	}
 
@@ -31,6 +33,7 @@ try {
 		console.log(
 			'Warning: signtool is not installed. To enable signing of the resulting executables, install the Microsoft SDK for Windows 10 and add signtool.exe to your PATH.'
 		)
+
 		process.exit(0)
 	}
 

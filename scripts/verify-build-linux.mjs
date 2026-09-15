@@ -1,8 +1,6 @@
-/* eslint-disable node/no-unpublished-import, node/no-extraneous-import, no-console */
-
 import childProcess from 'child_process'
 import path from 'path'
-import process from 'process'
+// import process from 'process' // process is a global variable in node.js
 import { promisify } from 'util'
 
 const exec = promisify(childProcess.exec)

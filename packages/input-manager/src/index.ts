@@ -1,14 +1,14 @@
+import { TriggerEvent } from './devices/device.js'
+import { ClassNames, Feedback, SomeFeedback, Tally } from './feedback/feedback.js'
 import {
-	InputManager,
-	SomeDeviceConfig,
-	TriggerEventArgs,
 	getIntegrationsConfigManifest,
+	InputManager,
 	ManagerTriggerEventArgs,
+	SomeDeviceConfig,
 	SubdeviceManifest,
-} from './inputManager'
-import { Feedback, SomeFeedback, ClassNames, Tally } from './feedback/feedback'
-import { DeviceType } from './integrations/deviceType'
-import { TriggerEvent } from './devices/device'
+	TriggerEventArgs,
+} from './inputManager.js'
+import { DeviceType } from './integrations/deviceType.js'
 
 export {
 	InputManager,

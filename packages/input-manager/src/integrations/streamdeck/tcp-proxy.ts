@@ -1,9 +1,10 @@
-import { StreamDeckTcpConnectionManager, StreamDeckTcp } from '@elgato-stream-deck/tcp'
-import { SomeFeedback } from '../../feedback/feedback'
-import { StreamDeckDeviceOptions } from '../../generated'
-import { Logger } from '../../logger'
-import { StreamDeckDeviceHandler } from './device'
-import type { StreamDeckDeviceBase, StreamDeckEventTarget } from './types'
+import { StreamDeckTcp, StreamDeckTcpConnectionManager } from '@elgato-stream-deck/tcp'
+
+import { SomeFeedback } from '../../feedback/feedback.js'
+import { StreamDeckDeviceOptions } from '../../generated/index.js'
+import { Logger } from '../../logger.js'
+import { StreamDeckDeviceHandler } from './device.js'
+import type { StreamDeckDeviceBase, StreamDeckEventTarget } from './types.js'
 
 /**
  * A proxy for handling the connect/disconnect glow of the Stream Deck TCP connection.
@@ -28,11 +29,9 @@ export class StreamDeckTcpProxy implements StreamDeckDeviceBase {
 	}
 
 	async init(): Promise<void> {
-		// @ts-expect-error Something wrong with the lib types..
 		this.connectionManager.on('error', (err: string) => {
 			this.logger.error(`Stream Deck: Connection error: ${err}`)
 		})
-		// @ts-expect-error Something wrong with the lib types..
 		this.connectionManager.on('disconnected', (_streamdeck: StreamDeckTcp) => {
 			if (this.streamdeck) {
 				this.streamdeck.destroy().catch((err) => {
@@ -45,7 +44,6 @@ export class StreamDeckTcpProxy implements StreamDeckDeviceBase {
 
 			this.logger.info('Stream Deck: Disconnected from device')
 		})
-		// @ts-expect-error Something wrong with the lib types..
 		this.connectionManager.on('connected', (streamdeck: StreamDeckTcp) => {
 			if (streamdeck.CONTROLS.length === 0) {
 				// Ignore the network-dock in a generic way

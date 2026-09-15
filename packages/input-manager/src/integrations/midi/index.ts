@@ -1,11 +1,11 @@
-import { Channel, Input, Output, getInputs, getOutputs } from 'easymidi'
-import { Logger } from '../../logger'
-import { Device } from '../../devices/device'
-import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib'
-import { SomeFeedback, Tally } from '../../feedback/feedback'
-import { MIDICCFeedback, MIDIControllerOptions, MIDINoteOnFeedback } from '../../generated/midi'
+import { Channel, getInputs, getOutputs, Input, Output } from 'easymidi'
 
-import DEVICE_OPTIONS from './$schemas/options.json'
+import { Device } from '../../devices/device.js'
+import { SomeFeedback, Tally } from '../../feedback/feedback.js'
+import { MIDICCFeedback, MIDIControllerOptions, MIDINoteOnFeedback } from '../../generated/midi.js'
+import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib.js'
+import { Logger } from '../../logger.js'
+import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 enum MIDISymbols {
 	CC = 'cc',
@@ -62,7 +62,7 @@ export class MIDIDevice extends Device {
 			this.checkInterval = setInterval(() => this.midiPortDetection(), MIDI_RECHECK_INTERVAL)
 		} catch (e) {
 			this.emit('error', {
-				error: new Error('MIDI init error'),
+				error: new Error(`MIDI init error ${e}`),
 			})
 		}
 	}
@@ -100,7 +100,7 @@ export class MIDIDevice extends Device {
 		isCC: boolean
 		isUp: boolean
 	} {
-		const triggerElements = triggerId.match(/(\d+)_(\d+)\s+(\S+)/)
+		const triggerElements = triggerId.match(/(\d+)_(\d+)\s+(\S+)/) as (Symbols | MIDISymbols)[]
 		if (!triggerElements) return { channel: 0, noteOrController: 0, isNote: false, isCC: false, isUp: false }
 		const channel = Number.parseInt(triggerElements[1] ?? '0')
 		const noteOrController = Number.parseInt(triggerElements[2] ?? '0')

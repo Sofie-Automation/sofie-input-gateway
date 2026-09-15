@@ -1,4 +1,4 @@
-import { SomeFeedback } from '../feedback/feedback'
+import { SomeFeedback } from '../feedback/feedback.js'
 
 export class FeedbackStore<T extends SomeFeedback> {
 	private store: Record<string, Record<string, T>>

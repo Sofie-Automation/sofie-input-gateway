@@ -1,7 +1,8 @@
 import { CanvasRenderingContext2D, CanvasTextAlign } from 'skia-canvas'
-import { BitmapStyleProps, Feedback } from '../../feedback'
-import { TextContext } from '../lib/TextContext'
-import { GlobalImageCache } from '../lib/ImageCache'
+
+import { BitmapStyleProps, Feedback } from '../../feedback.js'
+import { GlobalImageCache } from '../lib/ImageCache.js'
+import { TextContext } from '../lib/TextContext.js'
 
 export abstract class BaseRenderer {
 	protected text: TextContext
@@ -70,7 +71,7 @@ export abstract class BaseRenderer {
 			textShadowColor: style.textShadowColor,
 			textShadowOffset: style.textShadowOffset,
 			spring: true,
-			background: !style.backgroundImage ? style.background ?? '#000' : undefined,
+			background: !style.backgroundImage ? (style.background ?? '#000') : undefined,
 			lineClamp: this.getLineClamp(style.lineClamp),
 		})
 	}

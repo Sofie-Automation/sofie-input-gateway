@@ -4,15 +4,11 @@
 	"exclude": ["node_modules/**", "src/**/*spec.ts", "src/**/__tests__/*", "src/**/__mocks__/*"],
 	"compilerOptions": {
 		"outDir": "./dist",
-		"baseUrl": "./",
-		"paths": {
-			"*": ["./node_modules/*"],
-			"{{PACKAGE-NAME}}": ["./src/index.ts"]
-		},
+		"rootDir": "./src",
 		"types": ["node"],
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"target": "ES2022",
-		"resolveJsonModule": true
+		// "module": "es2022",
+		// "target": "ES2022",
+		"resolveJsonModule": true,
+		"skipLibCheck": true
 	}
 }

@@ -1,5 +1,6 @@
-import type { CoreConfig } from './coreHandler'
 import type { HealthConfig, PeripheralDeviceId } from '@sofie-automation/server-core-integration'
+
+import type { CoreConfig } from './coreHandler.js'
 
 export interface Config {
 	certificates: CertificatesConfig

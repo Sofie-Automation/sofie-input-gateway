@@ -1,11 +1,12 @@
-import * as osc from 'osc'
-import { Logger } from '../../logger'
-import { Device, TriggerEventArguments } from '../../devices/device'
-import { SomeFeedback, Tally } from '../../feedback/feedback'
 import { clearInterval } from 'timers'
-import { OSCServerOptions } from '../../generated'
 
-import DEVICE_OPTIONS from './$schemas/options.json'
+import * as osc from 'osc'
+
+import { Device, TriggerEventArguments } from '../../devices/device.js'
+import { SomeFeedback, Tally } from '../../feedback/feedback.js'
+import { OSCServerOptions } from '../../generated/index.js'
+import { Logger } from '../../logger.js'
+import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 const PING_MESSAGE_ADDRESS = '/ping'
 const KNOWN_SENDER_EXPIRATION = 30 * 1000
@@ -50,8 +51,8 @@ export class OSCServer extends Device {
 				message.args instanceof Uint8Array
 					? [message.args]
 					: Array.isArray(message.args)
-					? message.args
-					: [message.args]
+						? message.args
+						: [message.args]
 
 			for (let i = 0; i < args.length; i++) {
 				messageArguments[`${i}`] = JSON.stringify(args[i])

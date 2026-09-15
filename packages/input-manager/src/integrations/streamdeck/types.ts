@@ -1,5 +1,5 @@
-import type { SomeFeedback } from '../../feedback/feedback'
-import type { Device } from '../../devices/device'
+import type { Device } from '../../devices/device.js'
+import type { SomeFeedback } from '../../feedback/feedback.js'
 
 export type StreamDeckEventTarget = Device
 

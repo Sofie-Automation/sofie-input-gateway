@@ -1,14 +1,10 @@
 {
-	"extends": "@sofie-automation/code-standard-preset/ts/tsconfig.lib",
+	"extends": "@sofie-automation/code-standard-preset/ts/tsconfig.bin",
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules/**", "src/**/*spec.ts", "src/**/__tests__/*", "src/**/__mocks__/*"],
 	"compilerOptions": {
 		"outDir": "./dist",
 		"rootDir": "./src",
-		"types": ["node"],
-		// "module": "es2022",
-		// "target": "ES2022",
-		"resolveJsonModule": true,
-		"skipLibCheck": true
+		"types": ["node"]
 	}
 }

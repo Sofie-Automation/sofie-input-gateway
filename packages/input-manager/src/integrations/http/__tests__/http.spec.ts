@@ -1,17 +1,21 @@
-import { HTTPServer } from '../index'
 import { IncomingMessage, ServerResponse } from 'http'
-import { MockLogger } from '../../../__mocks__/logger'
 
+import { describe, expect, it, vi } from 'vitest'
+
+import { makeMockLogger } from '../../../mockLogger.js'
+import { HTTPServer } from '../index.js'
+
+const MockLogger = makeMockLogger()
 type DeepPartial<T> = T extends object
 	? {
 			[P in keyof T]?: DeepPartial<T[P]>
-	  }
+		}
 	: T
 
 let mockRequestClb: (req: DeepPartial<IncomingMessage>, res: DeepPartial<ServerResponse>) => void
 let mockServerPort: number
 
-jest.mock('http', () => ({
+vi.mock('http', () => ({
 	Server: class Server {
 		constructor(clb: (req: IncomingMessage, res: ServerResponse) => void) {
 			mockRequestClb = clb as any
@@ -42,11 +46,11 @@ describe('HTTP Server', () => {
 			},
 			MockLogger
 		)
-		const triggerHandler = jest.fn()
+		const triggerHandler = vi.fn()
 		device.on('trigger', triggerHandler)
 		await device.init()
 
-		const responseEnd = jest.fn()
+		const responseEnd = vi.fn()
 
 		const method = 'POST'
 		const url = '/mock/0'

@@ -1,17 +1,25 @@
+import { describe, expect, it, vi } from 'vitest'
 import type { StreamDeckButtonControlDefinition, StreamDeckEncoderControlDefinition } from '@elgato-stream-deck/node'
-import { Symbols } from '../../../lib'
+
+import * as bitmapFeedbackFactory from '../../../feedback/bitmap/index.js' // is mocked, see below
+import { Symbols } from '../../../lib.js'
+import { makeMockLogger } from '../../../mockLogger.js'
+import { StreamDeckDevice } from '../index.js'
+
+const MockLogger = makeMockLogger()
 
 async function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms))
 }
-const mockBitmapFeedbackFactory = {
-	init: jest.fn(),
-	getBitmap: jest.fn((feedback: any, _width: number, _height: number, isDown: boolean) => {
-		return (isDown ? 'isDown: true' : 'isDown: false') + JSON.stringify(feedback)
-	}),
-}
 
-jest.mock('../../../feedback/bitmap/index', () => mockBitmapFeedbackFactory)
+vi.mock('../../../feedback/bitmap/index.js', () => {
+	return {
+		init: vi.fn(),
+		getBitmap: vi.fn((feedback: any, _width: number, _height: number, isDown: boolean) => {
+			return (isDown ? 'isDown: true' : 'isDown: false') + JSON.stringify(feedback)
+		}),
+	}
+})
 
 const MOCK_SERIAL = 'MOCKSERIAL'
 
@@ -29,7 +37,7 @@ let mockListeners: Record<
 > = {}
 
 const mockStreamDeck = {
-	addListener: jest.fn(
+	addListener: vi.fn(
 		(
 			event: string,
 			listener: (control: StreamDeckButtonControlDefinition | StreamDeckEncoderControlDefinition) => void
@@ -37,13 +45,13 @@ const mockStreamDeck = {
 			mockListeners[event] = listener
 		}
 	),
-	clearKey: jest.fn(),
-	fillKeyBuffer: jest.fn(),
-	fillLcd: jest.fn(),
-	clearPanel: jest.fn(),
-	close: jest.fn(),
-	checkValidKeyIndex: jest.fn(),
-	setBrightness: jest.fn(async () => Promise.resolve()),
+	clearKey: vi.fn(),
+	fillKeyBuffer: vi.fn(),
+	fillLcd: vi.fn(),
+	clearPanel: vi.fn(),
+	close: vi.fn(),
+	checkValidKeyIndex: vi.fn(),
+	setBrightness: vi.fn(async () => Promise.resolve()),
 	CONTROLS: [
 		{
 			type: 'button' as const,
@@ -60,7 +68,7 @@ const mockStreamDeck = {
 	],
 }
 
-jest.mock('@elgato-stream-deck/node', () => ({
+vi.mock('@elgato-stream-deck/node', () => ({
 	listStreamDecks: () => {
 		return mockStreamDeckList
 	},
@@ -78,9 +86,6 @@ jest.mock('@elgato-stream-deck/node', () => ({
 function mockTriggerControl(event: 'up' | 'down') {
 	mockListeners[event](mockStreamDeck.CONTROLS[0])
 }
-
-import { StreamDeckDevice } from '../index'
-import { MockLogger } from '../../../__mocks__/logger'
 
 describe('Stream Deck', () => {
 	async function connectToMockStreamDeck() {
@@ -106,7 +111,7 @@ describe('Stream Deck', () => {
 	it('Emits a trigger event when it receives a button press', async () => {
 		const device = await connectToMockStreamDeck()
 
-		const triggerHandler = jest.fn()
+		const triggerHandler = vi.fn()
 		device.on('trigger', triggerHandler)
 
 		mockTriggerControl('down')
@@ -137,9 +142,9 @@ describe('Stream Deck', () => {
 
 		await device.setFeedback(`1 ${Symbols.DOWN}`, feedback)
 
-		expect(mockBitmapFeedbackFactory.getBitmap).toHaveBeenCalled()
-		expect(mockBitmapFeedbackFactory.getBitmap.mock.calls[0][0]).toMatchObject(feedback)
-		expect(mockBitmapFeedbackFactory.getBitmap.mock.calls[0][3]).toBe(false)
+		expect(bitmapFeedbackFactory.getBitmap).toHaveBeenCalled()
+		expect(bitmapFeedbackFactory.getBitmap.mock.calls[0][0]).toMatchObject(feedback)
+		expect(bitmapFeedbackFactory.getBitmap.mock.calls[0][3]).toBe(false)
 
 		expect(mockStreamDeck.fillKeyBuffer).toHaveBeenCalledTimes(1)
 		expect(mockStreamDeck.fillKeyBuffer.mock.calls[0][0]).toBe(1)
@@ -154,7 +159,7 @@ describe('Stream Deck', () => {
 			},
 		}
 
-		const triggerHandler = jest.fn()
+		const triggerHandler = vi.fn()
 		device.on('trigger', triggerHandler)
 
 		await device.setFeedback(`1 ${Symbols.DOWN}`, feedback)
