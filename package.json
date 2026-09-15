@@ -44,7 +44,7 @@
     "build-linux-x64": "pkg -t node24-linux-x64 --public ./packages/input-gateway",
     "sign-executables": "node scripts/sign-executables.mjs",
     "copy-assets": "node scripts/copy-assets.mjs",
-    "zip-deploy": "node scripts/zip-deploy.js",
+    "zip-deploy": "node scripts/zip-deploy.mjs",
     "release": "sofie-version",
     "generate-schema-types": "yarn workspaces foreach --all run generate-schema-types",
     "g:eslint": "cd $INIT_CWD && \"$PROJECT_CWD/node_modules/.bin/eslint\""
