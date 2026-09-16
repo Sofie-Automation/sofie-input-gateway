@@ -83,7 +83,7 @@ class InputManager extends EventEmitter<DeviceEvents> {
 
 		await Promise.allSettled(
 			Object.entries<SomeDeviceConfig>(this.config.devices).map(async ([deviceId, deviceConfig]) =>
-				this.createDevice(deviceId, deviceConfig ?? {})
+				this.createDevice(deviceId, deviceConfig)
 			)
 		)
 
@@ -136,6 +136,8 @@ class InputManager extends EventEmitter<DeviceEvents> {
 	}
 
 	private async createDevice(deviceId: string, deviceConfig: SomeDeviceConfig): Promise<void> {
+		deviceConfig.options = deviceConfig.options ?? {}
+
 		let createdDevice: Device | undefined = undefined
 		try {
 			this.#logger.debug(`Creating new device "${deviceId}"...`)
