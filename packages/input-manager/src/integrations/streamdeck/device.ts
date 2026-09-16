@@ -11,7 +11,7 @@ import { BitmapFeedback, Feedback, SomeFeedback, Tally } from '../../feedback/fe
 import { StreamDeckDeviceOptions, StreamdeckStylePreset } from '../../generated/index.js'
 import { assertNever, DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib.js'
 import { Logger } from '../../logger.js'
-import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
+import DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 import { StreamDeckEventTarget } from './types.js'
 
 export class StreamDeckDeviceHandler {

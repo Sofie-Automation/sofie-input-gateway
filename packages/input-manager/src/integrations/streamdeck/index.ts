@@ -4,7 +4,7 @@ import { Device } from '../../devices/device.js'
 import { SomeFeedback } from '../../feedback/feedback.js'
 import { StreamDeckDeviceOptions } from '../../generated/index.js'
 import { Logger } from '../../logger.js'
-import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
+import DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 import { StreamDeckDeviceHandler } from './device.js'
 import { StreamDeckTcpProxy } from './tcp-proxy.js'
 import { StreamDeckDeviceBase } from './types.js'

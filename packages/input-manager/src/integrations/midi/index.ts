@@ -5,7 +5,7 @@ import { SomeFeedback, Tally } from '../../feedback/feedback.js'
 import { MIDICCFeedback, MIDIControllerOptions, MIDINoteOnFeedback } from '../../generated/midi.js'
 import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib.js'
 import { Logger } from '../../logger.js'
-import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
+import DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 enum MIDISymbols {
 	CC = 'cc',

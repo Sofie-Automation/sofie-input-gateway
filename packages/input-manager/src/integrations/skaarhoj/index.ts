@@ -10,7 +10,7 @@ import { ClassNames, Label, SomeFeedback, Tally } from '../../feedback/feedback.
 import { SkaarhojPanelOptions } from '../../generated/index.js'
 import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib.js'
 import { Logger } from '../../logger.js'
-import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
+import DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 const SEND_TIMEOUT = 1000
 const CONNECTION_TIMEOUT = 5000

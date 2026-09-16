@@ -6,7 +6,7 @@ import { Device, TriggerEventArguments } from '../../devices/device.js'
 import { SomeFeedback, Tally } from '../../feedback/feedback.js'
 import { OSCServerOptions } from '../../generated/index.js'
 import { Logger } from '../../logger.js'
-import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
+import DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 const PING_MESSAGE_ADDRESS = '/ping'
 const KNOWN_SENDER_EXPIRATION = 30 * 1000

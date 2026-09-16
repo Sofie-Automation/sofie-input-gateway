@@ -5,7 +5,7 @@ import { ClassNames, SomeFeedback, Tally } from '../../feedback/feedback.js'
 import { XKeysDeviceOptions } from '../../generated/index.js'
 import { DEFAULT_ANALOG_RATE_LIMIT, Symbols } from '../../lib.js'
 import { Logger } from '../../logger.js'
-import * as DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
+import DEVICE_OPTIONS from './$schemas/options.json' with { type: 'json' }
 
 enum Colors {
 	RED = '#ff0000',

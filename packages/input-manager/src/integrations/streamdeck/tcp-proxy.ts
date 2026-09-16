@@ -25,7 +25,7 @@ export class StreamDeckTcpProxy implements StreamDeckDeviceBase {
 	constructor(config: StreamDeckDeviceOptions, logger: Logger, events: StreamDeckEventTarget) {
 		this.events = events
 		this.logger = logger
-		this.config = config
+		this.config = config ?? {}
 	}
 
 	async init(): Promise<void> {

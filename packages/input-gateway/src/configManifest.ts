@@ -9,7 +9,7 @@ import {
 	SubdeviceManifest,
 } from '@sofie-automation/server-core-integration'
 
-import * as DEVICE_CONFIG from './$schemas/options.json' with { type: 'json' }
+import DEVICE_CONFIG from './$schemas/options.json' with { type: 'json' }
 
 const subdeviceManifest: SubdeviceManifest = Object.fromEntries(
 	Object.entries<InputDeviceManifest>(getIntegrationsConfigManifest()).map(([id, dev]) => {
