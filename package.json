@@ -45,7 +45,6 @@
     "sign-executables": "node scripts/sign-executables.mjs",
     "copy-assets": "node scripts/copy-assets.mjs",
     "zip-deploy": "node scripts/zip-deploy.mjs",
-    "release": "sofie-version",
     "generate-schema-types": "yarn workspaces foreach --all run generate-schema-types",
     "format-schema-types": "prettier ./packages/*/src/generated/** --write",
     "g:eslint": "cd $INIT_CWD && \"$PROJECT_CWD/node_modules/.bin/eslint\""

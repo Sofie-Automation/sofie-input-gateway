@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/Sofie-Automation/sofie-input-gateway/compare/v0.4.0...v1.0.0) (2026-10-08)
+
+### Bug Fixes
+
+- do least amount of searches, but fallback ([9aa3f91](https://github.com/Sofie-Automation/sofie-input-gateway/commit/9aa3f91a5d896192090a5ae23f204a286a8b935e))
+- import json properly ([5ca0e89](https://github.com/Sofie-Automation/sofie-input-gateway/commit/5ca0e8999e45dfca804a532ff319465dcdc31bb0))
+
+### Features
+
+- add HealthEndpoints support ([0118ff9](https://github.com/Sofie-Automation/sofie-input-gateway/commit/0118ff902e9f7fc3d2f3d5876032c31bba729102))
+- add stylePresets support to tally ([ad485e2](https://github.com/Sofie-Automation/sofie-input-gateway/commit/ad485e2bb7ec9d5dc3791c2ab38723f21bd040cd))
+- add support for tally-state pseudo-classes ([946eaec](https://github.com/Sofie-Automation/sofie-input-gateway/commit/946eaec6a599b71b341ac9ca913d3dcec57a8fda))
+
 # [0.4.0](https://github.com/nrkno/sofie-input-gateway/compare/v0.3.1-alpha.3...v0.4.0) (2025-07-01)
 
 ### Features
